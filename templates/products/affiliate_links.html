@@ -1,0 +1,6 @@
+<h2>Your Affiliate Links</h2>
+<ul>
+    {% for link in links %}
+        <li>{{ link.product.name }}: <a href="{{ link.unique_url }}">{{ link.unique_url }}</a></li>
+    {% endfor %}
+</ul>

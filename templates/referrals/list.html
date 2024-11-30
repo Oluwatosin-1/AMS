@@ -1,0 +1,21 @@
+<h2>Your Referrals</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Client Email</th>
+            <th>Product</th>
+            <th>Commission</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for referral in referrals %}
+            <tr>
+                <td>{{ referral.client_email }}</td>
+                <td>{{ referral.product.name }}</td>
+                <td>{{ referral.commission_earned }}</td>
+                <td>{{ referral.referred_at }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
