@@ -45,19 +45,19 @@ INSTALLED_APPS = [
     'payments',
     'referrals',
 ]
-
+ 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',  # Auth middleware
+    'middleware.role_redirect.RoleRedirectMiddleware',  # Custom middleware
     'middleware.referral_tracking.ReferralTrackingMiddleware',
-    'middleware.role_redirect.RoleRedirectMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware'
+]
 
-] 
 ROOT_URLCONF = "core.urls"
 
 TEMPLATES = [
@@ -121,6 +121,9 @@ USE_I18N = True
 USE_TZ = True
 
 AUTH_USER_MODEL = 'affiliates.CustomUser'
+LOGIN_REDIRECT_URL = '/affiliate-dashboard/'
+LOGIN_URL = '/login/'  # Ensure this is not redirecting back into a loop
+LOGOUT_REDIRECT_URL = '/'
 
 
 # Static files (CSS, JavaScript, Images)

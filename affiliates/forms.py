@@ -3,15 +3,18 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import CustomUser
 from django.contrib.auth.forms import AuthenticationForm
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm 
 from .models import CustomUser
 
-class CustomUserRegistrationForm(UserCreationForm):
-    user_type = forms.ChoiceField(choices=CustomUser.USER_TYPES)
-
+class AffiliateRegistrationForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'password1', 'password2', 'user_type']
+        fields = ['username', 'email', 'password1', 'password2']  # No user_type field
+
+class AdminRegistrationForm(UserCreationForm):
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'email', 'password1', 'password2']  # No user_type field
 
 class AffiliateProfileForm(forms.Form):
     full_name = forms.CharField(max_length=255)

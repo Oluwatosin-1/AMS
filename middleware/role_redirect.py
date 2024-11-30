@@ -1,19 +1,32 @@
-# middleware/role_redirect.py
-
 from django.shortcuts import redirect
+from django.urls import reverse
+
 
 class RoleRedirectMiddleware:
-    """
-    Middleware to redirect users based on their role after login.
-    """
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
-        # Skip processing if user is not authenticated
+        # Exclude Django admin URLs
+        if request.path.startswith(reverse('admin:index')):
+            return self.get_response(request)
+
         if request.user.is_authenticated:
-            if request.user.user_type == 'admin':
-                return redirect('/admin-dashboard/')  # Replace with your admin dashboard URL
+            current_path = request.path
+
+            # Avoid redirection loops
+            if current_path in [
+                reverse('admin_dashboard'),
+                reverse('affiliate_dashboard'),
+            ]:
+                return self.get_response(request)
+
+            # Redirect based on user roles
+            if request.user.is_superuser:
+                return redirect(reverse('admin:index'))  # Django admin
+            elif request.user.user_type == 'admin':
+                return redirect('admin_dashboard')
             elif request.user.user_type == 'affiliate':
-                return redirect('/affiliate-dashboard/')  # Replace with your affiliate dashboard URL
+                return redirect('affiliate_dashboard')
+
         return self.get_response(request)

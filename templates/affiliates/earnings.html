@@ -1,0 +1,17 @@
+<h2>Your Earnings</h2>
+<table>
+    <tr>
+        <th>Product</th>
+        <th>Client Email</th>
+        <th>Amount</th>
+        <th>Purchase Date</th>
+    </tr>
+    {% for earning in earnings %}
+        <tr>
+            <td>{{ earning.product.name }}</td>
+            <td>{{ earning.client_email }}</td>
+            <td>{{ earning.amount }}</td>
+            <td>{{ earning.purchased_at }}</td>
+        </tr>
+    {% endfor %}
+</table>

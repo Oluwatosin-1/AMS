@@ -1,0 +1,11 @@
+<h2>Your Affiliate Links</h2>
+<ul>
+    {% for link in links %}
+        <li><a href="{{ link.unique_url }}">{{ link.product.name }}</a> - Clicks: {{ link.clicks }}</li>
+    {% endfor %}
+    <li><a href="{% url 'affiliates:create_link' %}">Create a new affiliate link</a></li>   
+    <li><a href="{% url 'affiliates:logout' %}">Logout</a></li>   
+    <li><a href="{% url 'affiliates:profile' %}">Profile</a></li>   
+    <li><a href="{% url 'affiliates:change_password' %}">Change Password</a></li>   
+    <li><a href="{% url 'affiliates:delete_account' %}">Delete Account</a></li>
+</ul>
