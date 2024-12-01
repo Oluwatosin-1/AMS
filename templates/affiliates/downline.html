@@ -25,11 +25,10 @@
             <tbody>
                 {% for referral in referrals %}
                     <tr>
-                        <!-- Using the `default` filter to handle fallback -->
-                        <td>{{ referral.user.full_name|default:referral.user.username }}</td>
-                        <td>{{ referral.user.email }}</td>
-                        <td>{{ referral.created_at|date:"Y-m-d" }}</td>
-                        <td>{{ referral.referrals }}</td>
+                        <td>{{ referral.name }}</td>
+                        <td>{{ referral.email }}</td>
+                        <td>{{ referral.join_date|date:"Y-m-d" }}</td>
+                        <td>{{ referral.referrals_made }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

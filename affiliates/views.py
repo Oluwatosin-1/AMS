@@ -139,17 +139,18 @@ def view_downline(request):
     affiliate = request.user.affiliate
     referrals = Affiliate.objects.filter(referred_by=affiliate)
 
-    # Add display name fallback logic in the context
-    referrals_with_names = [
+    # Preprocess referrals for cleaner template
+    referrals_with_details = [
         {
             'name': referral.user.full_name or referral.user.username,
             'email': referral.user.email,
-            'join_date': referral.created_at
+            'join_date': referral.created_at,
+            'referrals_made': referral.referrals
         }
         for referral in referrals
     ]
 
-    return render(request, 'affiliates/downline.html', {'referrals': referrals_with_names})
+    return render(request, 'affiliates/downline.html', {'referrals': referrals_with_details})
 
 @login_required
 def delete_affiliate(request, pk):
