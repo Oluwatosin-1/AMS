@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'payments',
     'referrals',
     'users',
+    'ranking'
 ]
  
 MIDDLEWARE = [
@@ -120,7 +121,7 @@ USE_I18N = True
 USE_TZ = True
 
 AUTH_USER_MODEL = 'users.CustomUser'   
-LOGOUT_REDIRECT_URL = '/' 
+LOGOUT_REDIRECT_URL = '/login/'  # Ensure this matches the path for the login page
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/

@@ -5,14 +5,13 @@ from django.http import HttpResponseForbidden
 from django.views.generic import TemplateView, ListView
 from django.utils.decorators import method_decorator 
 from django.db.models import Sum
+from ranking.utils import update_affiliate_rank
 from training.models import TrainingModule
 from .models import Affiliate
 from products.models import AffiliateProductLink, Product, ProductPurchase
 from .forms import AffiliateProfileForm
-from django.utils.timezone import now  # For the current year
-
-from django.conf import settings  # To fetch site domain dynamically
-
+from django.utils.timezone import now  # For the current year 
+from django.conf import settings  # To fetch site domain dynamically 
 
 @method_decorator(login_required, name='dispatch')
 class RoleBasedDashboardView(TemplateView):
@@ -38,10 +37,17 @@ class AffiliateDashboardView(ListView):
         """Add context data for dashboard metrics and related data."""
         context = super().get_context_data(**kwargs)
         affiliate = self.request.user.affiliate
+        
+        # Update the affiliate's rank
+        update_affiliate_rank(affiliate)
+        current_rank = affiliate.rank.current_rank if hasattr(affiliate, 'rank') else None
 
         # Add additional context variables
         context.update({
-            'display_name': self.request.user.full_name or self.request.user.username,
+            'display_name': self.request.user.full_name or self.request.user.username, 
+            'rank': current_rank.title if current_rank else "No Rank",
+            'rank_logo': current_rank.logo.url if current_rank and current_rank.logo else None,
+            'rank_reward': current_rank.reward if current_rank else 0,    
             'referrals': Affiliate.objects.filter(referred_by=affiliate),  # Downline tracking
             'links': AffiliateProductLink.objects.filter(affiliate=affiliate),  # Affiliate links
             'link_clicks': AffiliateProductLink.objects.filter(affiliate=affiliate).aggregate(

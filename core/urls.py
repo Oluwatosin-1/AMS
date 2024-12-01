@@ -11,6 +11,7 @@ urlpatterns = [
     path('training/', include('training.urls')),
     path('payments/', include('payments.urls')),
     path('referrals/', include('referrals.urls')),
+    path('ranking/', include('ranking.urls')),
 ]
 
 if settings.DEBUG:

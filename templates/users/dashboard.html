@@ -21,6 +21,7 @@
                 <li><a href="{% url 'payment_history' %}">Payment History</a></li>
                 <li><a href="{% url 'affiliate_training' %}">Training</a></li>
                 <li><a href="{% url 'view_downline' %}">Downline</a></li>
+                <li><a href="{% url 'view_rewards' %}">Rewards</a></li> <!-- Rewards Section -->
                 <li><a href="{% url 'logout' %}">Logout</a></li>
             </ul>
         </div>
@@ -72,6 +73,20 @@
             <div id="referral-link">
                 <h2>Your Referral Link</h2>
                 <p><a href="{% url 'generate_referral_link' %}">Generate your referral link here</a> and share it to grow your network.</p>
+            </div>
+            <!-- Rank Information -->
+            <div id="rank">
+                <h2>Your Current Rank</h2>
+                {% if rank %}
+                    <div>
+                        <img src="{{ rank_logo }}" alt="{{ rank }}" style="width: 50px; height: 50px;">
+                        <p><strong>Rank:</strong> {{ rank }}</p>
+                        <p><strong>Reward:</strong> ${{ rank_reward }}</p>
+                    </div>
+                {% else %}
+                    <p>You have not achieved any rank yet. Work on your referrals to progress!</p>
+                {% endif %}
+                <p><a href="{% url 'view_rewards' %}">View Rewards and Rank Details</a></p>
             </div>
 
             <!-- Training Progress -->
@@ -126,6 +141,12 @@
             <div id="payment-history">
                 <h2>Your Payment History</h2>
                 <p><a href="{% url 'payment_history' %}">View payment history</a> to check your payouts.</p>
+            </div>
+
+            <!-- Rewards -->
+            <div id="rewards">
+                <h2>Your Rewards</h2>
+                <p><a href="{% url 'view_rewards' %}">View your rewards</a> to see the bonuses and ranks you have achieved.</p>
             </div>
         </div>
     </div>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Rank Management</title>
+</head>
+<body>
+    <h1>Manage Ranks</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Min Personal Referrals</th>
+                <th>Min Total Referrals</th>
+                <th>Reward</th>
+                <th>Active</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rank in ranks %}
+                <tr>
+                    <td>{{ rank.title }}</td>
+                    <td>{{ rank.min_personal_referrals }}</td>
+                    <td>{{ rank.min_total_referrals }}</td>
+                    <td>${{ rank.reward }}</td>
+                    <td>{{ rank.is_active }}</td>
+                    <td><a href="{% url 'edit_rank' rank.id %}">Edit</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

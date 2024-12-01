@@ -1,5 +1,6 @@
 from django.db import models
-from django.conf import settings
+from django.conf import settings 
+from django.db.models import Sum 
 from .managers import AffiliateManager  # Custom manager for Affiliates
 
 class BaseModel(models.Model):
@@ -26,6 +27,21 @@ class Affiliate(BaseModel):
     def increase_referrals(self):
         self.referrals += 1
         self.save()
+
+    def calculate_total_earnings(self):
+        """Calculate total earnings including commissions and bonuses."""
+        from referrals.models import Referral  # Avoid circular imports
+        product_commissions = self.productpurchase_set.aggregate(
+            total=Sum('amount')
+        )['total'] or 0
+
+        referral_commissions = Referral.objects.filter(affiliate=self).aggregate(
+            total=Sum('commission_earned')
+        )['total'] or 0
+
+        rank_rewards = self.rank.current_rank.reward if hasattr(self, 'rank') and self.rank.current_rank else 0
+
+        return product_commissions + referral_commissions + rank_rewards
 
     def __str__(self):
         return self.user.username

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Your Rank</title>
+</head>
+<body>
+    <h1>Your Current Rank</h1>
+    {% if rank %}
+        <h2>{{ rank.title }}</h2>
+        <img src="{{ rank.logo.url }}" alt="{{ rank.title }} Logo">
+        <p>{{ rank.description }}</p>
+        <p>Reward: ${{ rank.reward }}</p>
+    {% else %}
+        <p>You have not achieved any rank yet.</p>
+    {% endif %}
+</body>
+</html>

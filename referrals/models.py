@@ -1,5 +1,7 @@
 from django.db import models
 from affiliates.models import Affiliate
+
+
 class Referral(models.Model):
     affiliate = models.ForeignKey(Affiliate, on_delete=models.CASCADE)
     product = models.ForeignKey('products.Product', on_delete=models.CASCADE)

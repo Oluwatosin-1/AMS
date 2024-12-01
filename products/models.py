@@ -1,8 +1,4 @@
 from django.db import models
-from affiliates.models import Affiliate
-from django.urls import reverse
-from utils.referrals import track_referral_commission
-from django.db import models
 from django.urls import reverse
 from django.core.validators import RegexValidator
 
@@ -35,45 +31,65 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     def get_commission_rates(self):
-        """Returns the commission rates as a list of floats."""
+        """
+        Parse and return the commission rates as a list of floats.
+        """
         try:
             return [float(rate.strip('%')) / 100 for rate in self.default_commission.split(',')]
         except ValueError:
             return []
 
     def get_commission_rate(self):
-        """Returns the first commission rate or a default of 0.05 (5%)."""
+        """
+        Return the first commission rate or default to 0.05 (5%).
+        """
         rates = self.get_commission_rates()
-        return rates[0] if rates else 0.05  # Default to 5% if no rates are defined
+        return rates[0] if rates else 0.05
 
     def __str__(self):
         return self.name
 
 
 class AffiliateProductLink(models.Model):
-    affiliate = models.ForeignKey(Affiliate, on_delete=models.CASCADE)
+    """
+    Model for linking affiliates to products with unique tracking URLs.
+    """
+    affiliate = models.ForeignKey('affiliates.Affiliate', on_delete=models.CASCADE)
     product = models.ForeignKey('Product', on_delete=models.CASCADE)
     unique_url = models.URLField(unique=True)
     clicks = models.PositiveIntegerField(default=0)
 
     def save(self, *args, **kwargs):
+        """
+        Override save to dynamically generate a unique URL if not provided.
+        """
         if not self.unique_url:
-            # Generate unique URL for affiliate-product pairing
-            self.unique_url = f"{reverse('product_detail', kwargs={'pk': self.product.id})}?ref={self.affiliate.user.id}"
+            self.unique_url = (
+                f"{reverse('product_detail', kwargs={'pk': self.product.id})}?ref={self.affiliate.user.id}"
+            )
         super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.affiliate.user.username} - {self.product.name}"
 
+
 class ProductPurchase(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    affiliate = models.ForeignKey(Affiliate, on_delete=models.SET_NULL, null=True, blank=True)
+    """
+    Model for tracking product purchases and associated affiliate commissions.
+    """
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    affiliate = models.ForeignKey('affiliates.Affiliate', on_delete=models.SET_NULL, null=True, blank=True)
     client_email = models.EmailField()
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     purchased_at = models.DateTimeField(auto_now_add=True)
+
     def save(self, *args, **kwargs):
+        """
+        Override save to calculate and track referral commission.
+        """
         super().save(*args, **kwargs)
-        track_referral_commission(self)
-        
+        from utils.referrals import track_referral_commission
+        track_referral_commission(self)  # Ensure referral commissions are tracked after purchase
+
     def __str__(self):
-        return f"{self.product.name} by {self.client_email}" 
+        return f"{self.product.name} purchased by {self.client_email}"

@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Rewards</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <h1>Your Rewards</h1>
+    {% if rewards %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Description</th>
+                    <th>Reward</th>
+                    <th>Achieved At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reward in rewards %}
+                    <tr>
+                        <td>{{ reward.current_rank.title }}</td>
+                        <td>{{ reward.current_rank.description }}</td>
+                        <td>${{ reward.current_rank.reward }}</td>
+                        <td>{{ reward.achieved_at|date:"Y-m-d" }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>You have not achieved any rewards yet. Keep working towards your goals!</p>
+    {% endif %}
+    <a href="{% url 'affiliate_dashboard' %}">Back to Dashboard</a>
+</body>
+</html>
