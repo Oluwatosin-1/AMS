@@ -65,7 +65,7 @@ def custom_logout(request):
     """Handle custom logout."""
     logout(request)  # Log the user out
     messages.success(request, "You have been logged out.")  # Optional: Display a success message
-    return redirect('users:login')  # Redirect to the login page or any page you want
+    return redirect('/')  # Redirect to the login page or any page you want
 
 class CustomLoginView(LoginView):
     template_name = 'users/login.html'
