@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from users.models import CustomUser, UserProfile
 from .forms import AffiliateRegistrationForm, AdminRegistrationForm, UserProfileForm
 from affiliates.models import Affiliate 
+from django.contrib.auth import logout
+from django.contrib import messages
 # Create your views here.
 
 def register_user(request):
@@ -59,9 +61,11 @@ def register_admin(request):
         form = AdminRegistrationForm()
     return render(request, 'users/register_admin.html', {'form': form})
 
-class CustomLogoutView(LogoutView):
-    next_page = '/'
-     
+def custom_logout(request):
+    """Handle custom logout."""
+    logout(request)  # Log the user out
+    messages.success(request, "You have been logged out.")  # Optional: Display a success message
+    return redirect('users:login')  # Redirect to the login page or any page you want
 
 class CustomLoginView(LoginView):
     template_name = 'users/login.html'
