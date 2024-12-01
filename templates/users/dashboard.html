@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affiliate Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <h2>Affiliate Menu</h2>
+            <ul>
+                <li><a href="{% url 'affiliate_dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'update_profile' %}">Update Profile</a></li>
+                <li><a href="{% url 'affiliate_links' %}">Affiliate Links</a></li>
+                <li><a href="{% url 'generate_referral_link' %}">Generate Referral Link</a></li>
+                <li><a href="{% url 'affiliate_earnings' %}">Earnings</a></li>
+                <li><a href="{% url 'payment_history' %}">Payment History</a></li>
+                <li><a href="{% url 'affiliate_training' %}">Training</a></li>
+                <li><a href="{% url 'view_downline' %}">Downline</a></li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div id="content">
+            <h1>Welcome, {{ display_name }}</h1>
+            <p>This is your affiliate dashboard. Below you can find an overview of your activities and access various sections to manage your account.</p>
+
+            <!-- Dashboard Overview -->
+            <div id="overview">
+                <h2>Dashboard Overview</h2>
+                <ul>
+                    <li><strong>Total Earnings:</strong> ${{ total_earnings }}</li>
+                    <li><strong>Number of Referrals:</strong> {{ referrals.count }}</li>
+                    <li><strong>Total Products Sold:</strong> {{ total_products_sold }}</li>
+                    <li><strong>Total Link Clicks:</strong> {{ link_clicks }}</li>
+                </ul>
+            </div>
+
+            <!-- Affiliate Links -->
+            <div id="links">
+                <h2>Your Affiliate Links</h2>
+                {% if links %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Affiliate Link</th>
+                                <th>Clicks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for link in links %}
+                                <tr>
+                                    <td>{{ link.product.name }}</td>
+                                    <td><a href="{{ link.unique_url }}" target="_blank">{{ link.unique_url }}</a></td>
+                                    <td>{{ link.clicks }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>You have not generated any affiliate links yet. <a href="{% url 'affiliate_links' %}">Create links now</a>.</p>
+                {% endif %}
+            </div>
+
+            <!-- Referral Link -->
+            <div id="referral-link">
+                <h2>Your Referral Link</h2>
+                <p><a href="{% url 'generate_referral_link' %}">Generate your referral link here</a> and share it to grow your network.</p>
+            </div>
+
+            <!-- Training Progress -->
+            <div id="training">
+                <h2>Training Progress</h2>
+                {% if training_modules %}
+                    <ul>
+                        {% for module in training_modules %}
+                            <li>
+                                {{ module.title }}
+                                {% if module.completed %}
+                                    - <span style="color: green;">Completed</span>
+                                {% else %}
+                                    - <a href="{% url 'complete_training_module' module.id %}">Complete Now</a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No training modules available at the moment.</p>
+                {% endif %}
+            </div>
+
+            <!-- Downline -->
+            <div id="downline">
+                <h2>Your Downline</h2>
+                {% if referrals %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Join Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for referral in referrals %}
+                                <tr>
+                                    <td>{{ referral.user.full_name }}</td>
+                                    <td>{{ referral.user.email }}</td>
+                                    <td>{{ referral.created_at|date:"Y-m-d" }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>You have not referred any users yet. Share your referral link to grow your network!</p>
+                {% endif %}
+            </div>
+
+            <!-- Payment History -->
+            <div id="payment-history">
+                <h2>Your Payment History</h2>
+                <p><a href="{% url 'payment_history' %}">View payment history</a> to check your payouts.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; {{ year }} Affiliate Management System. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,153 +1,164 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import login
-
-from products.models import AffiliateProductLink, ProductPurchase
-from training.models import TrainingModule
-from .forms import AdminRegistrationForm, AffiliateRegistrationForm, AffiliateProfileForm 
-from django.contrib.auth.views import LoginView, LogoutView
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from django.http import HttpResponseForbidden  
-from .models import  Affiliate
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
+from django.views.generic import TemplateView, ListView
+from django.utils.decorators import method_decorator 
+from django.db.models import Sum
+from training.models import TrainingModule
+from .models import Affiliate
+from products.models import AffiliateProductLink, Product, ProductPurchase
+from .forms import AffiliateProfileForm
+from django.utils.timezone import now  # For the current year
 
-def register_user(request):
-    referrer_id = request.GET.get('ref')  # Referral ID passed as a query parameter
-
-    if request.method == 'POST':
-        user_form = AffiliateRegistrationForm(request.POST)
-        if user_form.is_valid():
-            user = user_form.save(commit=False)
-            user.user_type = 'affiliate'
-            user.save()
-
-            referrer = Affiliate.objects.filter(user_id=referrer_id).first()
-            Affiliate.objects.create(user=user, referred_by=referrer)  # Link referrer if exists
-
-            login(request, user)  # Automatically log in the user
-            return redirect('affiliate_dashboard')
-    else:
-        user_form = AffiliateRegistrationForm()
-    return render(request, 'affiliates/register.html', {'user_form': user_form})
+from django.conf import settings  # To fetch site domain dynamically
 
 
-def register_admin(request):
-    if request.method == 'POST':
-        form = AdminRegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.user_type = 'admin'
-            user.save()
+@method_decorator(login_required, name='dispatch')
+class RoleBasedDashboardView(TemplateView):
+    """Redirect users to their respective dashboards based on role."""
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.user_type == 'admin':
             return redirect('admin_dashboard')
-    else:
-        form = AdminRegistrationForm()
-    return render(request, 'affiliates/register_admin.html', {'form': form})
+        elif request.user.user_type == 'affiliate':
+            return redirect('affiliate_dashboard')
+        return super().dispatch(request, *args, **kwargs)
 
-class CustomLogoutView(LogoutView):
-    next_page = '/'
+@method_decorator(login_required, name='dispatch')
+class AffiliateDashboardView(ListView):
+    """Affiliate-specific dashboard."""
+    model = ProductPurchase
+    template_name = "users/dashboard.html"
+
+    def get_queryset(self):
+        """Fetch all product purchases associated with the affiliate."""
+        return ProductPurchase.objects.filter(affiliate__user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        """Add context data for dashboard metrics and related data."""
+        context = super().get_context_data(**kwargs)
+        affiliate = self.request.user.affiliate
+
+        # Add additional context variables
+        context.update({
+            'display_name': self.request.user.full_name or self.request.user.username,
+            'referrals': Affiliate.objects.filter(referred_by=affiliate),  # Downline tracking
+            'links': AffiliateProductLink.objects.filter(affiliate=affiliate),  # Affiliate links
+            'link_clicks': AffiliateProductLink.objects.filter(affiliate=affiliate).aggregate(
+                total_clicks=Sum('clicks')
+            )['total_clicks'] or 0,
+            'total_earnings': ProductPurchase.objects.filter(affiliate=affiliate).aggregate(
+                total=Sum('amount')
+            )['total'] or 0,
+            'total_products_sold': ProductPurchase.objects.filter(affiliate=affiliate).count(),
+            'training_modules': TrainingModule.objects.all(),  # Add training modules if available
+            'year': now().year,  # Current year
+        })
+
+        return context
     
-def role_based_redirect(get_response):
-    def middleware(request):
-        print(f"User authenticated: {request.user.is_authenticated}, Path: {request.path}")
-        if request.user.is_authenticated:
-            if request.path in [reverse('admin_dashboard'), reverse('affiliate_dashboard')]:
-                return get_response(request)  # Prevent redirection loop
+@method_decorator(login_required, name='dispatch')
+class AdminDashboardView(ListView):
+    """Admin-specific dashboard."""
+    model = Affiliate
+    template_name = "users/admin_dashboard.html"
 
-            if request.user.user_type == 'admin':
-                print("Redirecting to admin dashboard")
-                return redirect('admin_dashboard')
-            elif request.user.user_type == 'affiliate':
-                print("Redirecting to affiliate dashboard")
-                return redirect('affiliate_dashboard')
-
-        return get_response(request)
-    return middleware
+    def get_queryset(self):
+        return Affiliate.objects.all()
 
 @login_required
 def update_affiliate_profile(request):
     if request.user.user_type != 'affiliate':
         return HttpResponseForbidden("You are not authorized to access this page.")
 
+    affiliate = request.user.affiliate
     if request.method == 'POST':
-        form = AffiliateProfileForm(request.POST)
+        form = AffiliateProfileForm(request.POST, instance=affiliate)
         if form.is_valid():
-            profile_data = form.cleaned_data
-            affiliate = request.user.affiliate
-            affiliate.user.first_name = profile_data.get('full_name')
-            affiliate.user.save()
-            affiliate.phone_number = profile_data.get('phone_number')
-            affiliate.address = profile_data.get('address')
-            affiliate.city = profile_data.get('city')
-            affiliate.state = profile_data.get('state')
-            affiliate.country = profile_data.get('country')
-            affiliate.website_url = profile_data.get('website_url')
-            affiliate.tax_identification_number = profile_data.get('tax_identification_number')
-            affiliate.preferred_payment_method = profile_data.get('preferred_payment_method')
-            affiliate.bank_account_details = profile_data.get('bank_account_details')
-            affiliate.save()
+            form.save()
             return redirect('affiliate_dashboard')
     else:
-        form = AffiliateProfileForm()
-
-    return render(request, 'affiliates/update_profile.html', {'form': form})
-
-
-class CustomLoginView(LoginView):
-    template_name = 'affiliates/login.html'
-
-    def get_success_url(self):
-        # Redirect based on user roles after login
-        user = self.request.user
-        if user.is_superuser:
-            return reverse('admin:index')  # Django admin site
-        elif user.user_type == 'admin':
-            return reverse('admin_dashboard')
-        elif user.user_type == 'affiliate':
-            return reverse('affiliate_dashboard')
-        return reverse('login')  # Default fallback
- 
-@login_required
-def admin_dashboard(request):
-    # Allow superusers and regular admins
-    if request.user.user_type != 'admin' and not request.user.is_superuser:
-        return HttpResponseForbidden("You are not authorized to access this page.")
-    return render(request, 'affiliates/admin_dashboard.html')
-
-@login_required
-def affiliate_dashboard(request):
-    # Restrict access to affiliates only
-    if request.user.user_type != 'affiliate':
-        return HttpResponseForbidden("You are not authorized to access this page.")
-    # Add affiliate-specific logic
-    display_name = request.user.full_name if request.user.full_name else request.user.username
-
-    return render(request, 'affiliates/dashboard.html', {'display_name': display_name})
-
-
-@login_required
-def affiliate_links(request):
-    # Ensure only affiliates can access their links
-    if request.user.user_type != 'affiliate':
-        return HttpResponseForbidden("You are not authorized to access this page.")
-
-    links = AffiliateProductLink.objects.filter(affiliate__user=request.user)
-    return render(request, 'affiliates/links.html', {'links': links})
-
+        form = AffiliateProfileForm(instance=affiliate)
+    
+    return render(request, 'users/update_profile.html', {'form': form})
 
 @login_required
 def affiliate_earnings(request):
-    # Ensure only affiliates can view their earnings
     if request.user.user_type != 'affiliate':
         return HttpResponseForbidden("You are not authorized to access this page.")
 
     earnings = ProductPurchase.objects.filter(affiliate__user=request.user)
-    return render(request, 'affiliates/earnings.html', {'earnings': earnings})
-
+    total_earnings = sum(purchase.amount for purchase in earnings)
+    
+    return render(request, 'affiliates/earnings.html', {'earnings': earnings, 'total_earnings': total_earnings})
 
 @login_required
 def affiliate_training(request):
-    # Ensure only affiliates can access training
     if request.user.user_type != 'affiliate':
         return HttpResponseForbidden("You are not authorized to access this page.")
 
     training_modules = TrainingModule.objects.all()
-    return render(request, 'training/modules.html', {'modules': training_modules})
+    return render(request, 'trainings/modules.html', {'modules': training_modules})
+
+@login_required
+def list_affiliate_links(request):
+    if request.user.user_type != 'affiliate':
+        return HttpResponseForbidden("You are not authorized to access this page.")
+
+    affiliate = request.user.affiliate
+    links = AffiliateProductLink.objects.filter(affiliate=affiliate)
+
+    products_without_links = Product.objects.exclude(
+        id__in=links.values_list('product_id', flat=True)
+    )
+
+    return render(request, 'affiliates/affiliate_links.html', {
+        'links': links,
+        'products_without_links': products_without_links,
+    })
+    
+
+@login_required
+def generate_referral_link(request):
+    """Generate a referral link for the affiliate."""
+    if request.user.user_type != 'affiliate':
+        return HttpResponseForbidden("You are not authorized to access this page.")
+    
+    affiliate = request.user.affiliate
+    referral_path = reverse('register_user')  # URL pattern for registration
+    referral_link = f"{settings.SITE_DOMAIN}{referral_path}?ref={affiliate.id}"  # Full URL with domain
+    print(f"Generated Referral Link: {referral_link}")  # Debug log
+    return render(request, 'affiliates/referral_link.html', {'referral_link': referral_link})
+
+@login_required
+def view_downline(request):
+    """View for tracking downline affiliates."""
+    if request.user.user_type != 'affiliate':
+        return HttpResponseForbidden("You are not authorized to access this page.")
+    
+    affiliate = request.user.affiliate
+    referrals = Affiliate.objects.filter(referred_by=affiliate)
+
+    # Add display name fallback logic in the context
+    referrals_with_names = [
+        {
+            'name': referral.user.full_name or referral.user.username,
+            'email': referral.user.email,
+            'join_date': referral.created_at
+        }
+        for referral in referrals
+    ]
+
+    return render(request, 'affiliates/downline.html', {'referrals': referrals_with_names})
+
+@login_required
+def delete_affiliate(request, pk):
+    """Admin-specific action to delete an affiliate."""
+    if request.user.user_type != 'admin':
+        return HttpResponseForbidden("You are not authorized to perform this action.")
+    
+    affiliate = get_object_or_404(Affiliate, pk=pk)
+    if request.method == 'POST':
+        affiliate.delete()
+        return redirect('admin_dashboard')
+    return render(request, 'affiliates/confirm_delete.html', {'affiliate': affiliate})

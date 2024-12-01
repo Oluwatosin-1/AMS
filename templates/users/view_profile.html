@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Profile</title>
+</head>
+<body>
+    <h1>Your Profile</h1>
+    <p><strong>Full Name:</strong> {{ profile.user.full_name }}</p>
+    <p><strong>Email:</strong> {{ profile.user.email }}</p>
+    <p><strong>Phone Number:</strong> {{ profile.phone_number }}</p>
+    <p><strong>Address:</strong> {{ profile.address }}</p>
+    <p><strong>City:</strong> {{ profile.city }}</p>
+    <p><strong>State:</strong> {{ profile.state }}</p>
+    <p><strong>Country:</strong> {{ profile.country }}</p>
+    <p><strong>Website:</strong> <a href="{{ profile.website_url }}">{{ profile.website_url }}</a></p>
+    <p><strong>Tax ID:</strong> {{ profile.tax_identification_number }}</p>
+    <p><strong>Preferred Payment Method:</strong> {{ profile.preferred_payment_method }}</p>
+    <p><strong>Bank Account Details:</strong> {{ profile.bank_account_details }}</p>
+    <a href="{% url 'update_profile' %}">Edit Profile</a>
+</body>
+</html>

@@ -1,8 +1,22 @@
 from django.urls import path
-from .views import create_product, generate_affiliate_links, purchase_product
+from .views import (
+    ProductDetailView,
+    ProductPurchaseView,
+    PurchaseSuccessView,
+    generate_affiliate_link,
+    create_product,
+)
 
 urlpatterns = [
-    path('create/', create_product, name='create_product'),
-    path('affiliate-links/', generate_affiliate_links, name='affiliate_links'),
-    path('purchase/<int:product_id>/', purchase_product, name='purchase_product'),
+    path('links/generate/<int:product_id>/', generate_affiliate_link, name='generate_affiliate_link'),
+    # Product details
+    path('product/<int:pk>/', ProductDetailView.as_view(), name='product_detail'),
+    # Product purchase
+    path('product/<int:product_id>/purchase/', ProductPurchaseView.as_view(), name='product_purchase'),
+    # Generate affiliate link
+    path('product/<int:product_id>/generate-link/', generate_affiliate_link, name='generate_affiliate_link'),
+    # Create new product (Admin Only)
+    path('product/create/', create_product, name='create_product'),
+    path('purchase-success/', PurchaseSuccessView.as_view(), name='purchase_success'),
 ]
+

@@ -25,9 +25,9 @@ SECRET_KEY = "django-insecure-ol)@a)g_hn#5fh@ak5l7p1b#@y^5ve8^@2wo63te7h2(5r$_i3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*', "localhost", '127.0.0.1', '']
 
-
+SITE_DOMAIN = 'http://127.0.0.1:8000'
 # Application definition
 
 INSTALLED_APPS = [
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'training',
     'payments',
     'referrals',
+    'users',
 ]
  
 MIDDLEWARE = [
@@ -52,8 +53,6 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',  # Auth middleware
-    'middleware.role_redirect.RoleRedirectMiddleware',  # Custom middleware
-    'middleware.referral_tracking.ReferralTrackingMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware'
 ]
@@ -120,16 +119,13 @@ USE_I18N = True
 
 USE_TZ = True
 
-AUTH_USER_MODEL = 'affiliates.CustomUser'
-LOGIN_REDIRECT_URL = '/affiliate-dashboard/'
-LOGIN_URL = '/login/'  # Ensure this is not redirecting back into a loop
-LOGOUT_REDIRECT_URL = '/'
-
+AUTH_USER_MODEL = 'users.CustomUser'   
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
-STATIC_URL = "static/"
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -137,3 +133,4 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+ 

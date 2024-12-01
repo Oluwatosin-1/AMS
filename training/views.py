@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import TrainingModule, TrainingProgress
 from django.utils import timezone
+from django.http import HttpResponseForbidden
 
 @login_required
 def complete_training_module(request, module_id):
@@ -20,3 +21,14 @@ def complete_training_module(request, module_id):
 def training_modules(request):
     modules = TrainingModule.objects.all()
     return render(request, 'training/modules.html', {'modules': modules})
+
+def delete_training_module(request, pk):
+    if not request.user.is_superuser:  # Restrict access to superusers
+        return HttpResponseForbidden("You are not authorized to perform this action.")
+    
+    module = get_object_or_404(TrainingModule, pk=pk)
+    if request.method == 'POST':
+        module.delete()
+        return redirect('training_module_list')  # Adjust to your training module list view name
+
+    return render(request, 'training/confirm_delete.html', {'module': module})

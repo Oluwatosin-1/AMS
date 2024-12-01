@@ -1,0 +1,9 @@
+{% load static %}
+<h2>Generate Affiliate Link</h2>
+<p>Your affiliate link for {{ link.product.name }}:</p>
+<p><a href="{{ link.unique_url }}">{{ link.unique_url }}</a></p>
+{% if created %}
+    <p>New link generated successfully!</p>
+{% else %}
+    <p>This link already exists.</p>
+{% endif %}

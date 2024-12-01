@@ -1,0 +1,8 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<h2>Your Referrals</h2>
+<ul>
+    {% for referral in referrals %}
+        <li>{{ referral.user.username }} (Joined: {{ referral.user.date_joined }})</li>
+    {% endfor %}
+</ul>

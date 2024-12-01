@@ -1,3 +1,5 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 <h2>Purchase {{ product.name }}</h2>
 <form method="post">
     {% csrf_token %}

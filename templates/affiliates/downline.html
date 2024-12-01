@@ -1,0 +1,43 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Downline</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <h1>Your Downline</h1>
+    <p>Here are the affiliates you have referred:</p>
+
+    {% if referrals %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Join Date</th>
+                    <th>Referrals Made</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for referral in referrals %}
+                    <tr>
+                        <!-- Using the `default` filter to handle fallback -->
+                        <td>{{ referral.user.full_name|default:referral.user.username }}</td>
+                        <td>{{ referral.user.email }}</td>
+                        <td>{{ referral.created_at|date:"Y-m-d" }}</td>
+                        <td>{{ referral.referrals }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No affiliates referred yet. Share your referral link to grow your network!</p>
+    {% endif %}
+
+    <a href="{% url 'affiliate_dashboard' %}">Back to Dashboard</a>
+</body>
+</html>
