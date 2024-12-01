@@ -35,11 +35,16 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     def get_commission_rates(self):
+        """Returns the commission rates as a list of floats."""
         try:
             return [float(rate.strip('%')) / 100 for rate in self.default_commission.split(',')]
         except ValueError:
             return []
-        
+
+    def get_commission_rate(self):
+        """Returns the first commission rate or a default of 0.05 (5%)."""
+        rates = self.get_commission_rates()
+        return rates[0] if rates else 0.05  # Default to 5% if no rates are defined
 
     def __str__(self):
         return self.name

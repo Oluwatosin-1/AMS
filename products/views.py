@@ -18,6 +18,7 @@ from django.http import HttpResponseForbidden
 from django.urls import reverse
 from django.conf import settings
 
+from decimal import Decimal
 
 class ProductDetailView(DetailView):
     model = Product
@@ -47,8 +48,8 @@ class ProductDetailView(DetailView):
 
         # Calculate and assign commission
         if affiliate:
-            commission_rate = product.get_commission_rate()  # Assume a method on Product
-            affiliate_commission = purchase.amount * commission_rate
+            commission_rate = Decimal(product.get_commission_rate())  # Convert to Decimal
+            affiliate_commission = purchase.amount * commission_rate  # Safe Decimal calculation
             Referral.objects.create(
                 affiliate=affiliate,
                 product=product,
@@ -57,7 +58,6 @@ class ProductDetailView(DetailView):
             )
 
         return redirect('purchase_success')  # Redirect to a success page
-
 
 class ProductPurchaseView(FormView):
     template_name = 'products/purchase_form.html'
