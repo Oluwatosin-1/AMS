@@ -1,11 +1,42 @@
-{% load static %}
-<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 <h2>Training Modules</h2>
-<ul>
-    {% for module in modules %}
-        <li>
-            {{ module.title }} - {{ module.completion_time }} minutes
-            <a href="{% url 'complete_training_module' module.id %}">Mark as Completed</a>
-        </li>
-    {% endfor %}
-</ul>
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Material</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for module, progress in progress_mapping.items %}
+            <tr>
+                <td>{{ module.title }}</td>
+                <td>
+                    {% if module.material %}
+                        <a href="{{ module.material.url }}">Download</a>
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>
+                    {% if progress and progress.completed %}
+                        Completed
+                        {% if progress.admin_verified %}
+                            (Verified)
+                        {% else %}
+                            (Pending Admin Verification)
+                        {% endif %}
+                    {% else %}
+                        Incomplete
+                    {% endif %}
+                </td>
+                <td>
+                    {% if not progress or not progress.completed %}
+                        <a href="{% url 'start_training' module.id %}">Start Training</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

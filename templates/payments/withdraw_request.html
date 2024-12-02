@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="section-header">
+  <h1>Withdrawal Request</h1>
+</div>
+
+<div class="section-body">
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Submit Request</button>
+  </form>
+</div>
+{% endblock %}

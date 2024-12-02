@@ -45,7 +45,13 @@ INSTALLED_APPS = [
     'payments',
     'referrals',
     'users',
-    'ranking'
+    'ranking',
+    
+    # Third party apps
+    'bootstrap4',
+    "crispy_forms",
+    "crispy_bootstrap5",
+    "django_filters",
 ]
  
 MIDDLEWARE = [
@@ -126,6 +132,7 @@ LOGOUT_REDIRECT_URL = '/login/'  # Ensure this matches the path for the login pa
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 MEDIA_URL = '/media/'
@@ -135,4 +142,19 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+ 
+#Email Configuration 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.titan.email'  # Example for Gmail SMTP
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'tosin@skillsquared.com'
+EMAIL_HOST_PASSWORD = 'Gbemi@1294'
+
+DEFAULT_FROM_EMAIL = 'tosin@skillsquared.com'
+ADMIN_EMAIL = 'tosin@skillsquared.com'  
+
+# crispy config
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
  

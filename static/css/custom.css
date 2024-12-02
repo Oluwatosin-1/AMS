@@ -1,0 +1,142 @@
+/**
+ *
+ * You can write your CSS code here, DO NOT touch the default JavaScript file
+ * because it will make it harder for you to update.
+ * 
+ */
+
+/*# sourceMappingURL=custom.css.map */
+
+textarea.rowsize-sm {
+    height: 80px !important;
+}
+textarea.rowsize-md {
+    height: 128px !important;
+}
+textarea.rowsize-lg {
+    height: 256px !important;
+}
+
+.select2 {
+    width:100% !important;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    font-size: 0.9em;
+    font-family: "Segoe UI", "Georgia", "Helvetica", Arial;
+    color: #bebebe !important;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    font-size: 0.9em;
+    font-family: "Segoe UI", "Georgia", "Helvetica", Arial;
+    color: #bebebe !important;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+    font-size: 0.9em;
+    font-family: "Segoe UI", "Georgia", "Helvetica", Arial;
+    color: #bebebe !important;
+}
+
+.subcfg-option {
+    border-left: 1px solid #E6ECF2;
+    border-radius: 16px;
+    padding-left: 16px;
+}
+
+.nogapline {
+    line-height : 1.4em;
+}
+
+.tooltip-inner {
+    max-width: 320px !important;
+}
+
+.tooltip, .popover {
+    pointer-events: none;
+}
+.helphint {
+    cursor: pointer;
+}
+.helphint-content {
+    margin: 4px 0 8px 16px;
+}
+
+.cookieAlertBar {
+    display:none;
+    position: fixed;
+    bottom: 10%;
+    width: 45%;
+    right: 5%;
+    text-align: center;
+    background-color: #FFFBE5;
+    color: #333;
+    padding: 20px 10px;
+    border: 1px solid #F5BD00;
+    border-radius: 4px;
+    z-index: 99999;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+.avatar .avatar-icon {
+    background: rgba(220, 220, 220, 0.3);
+}
+
+.planbgimg{
+    position: relative;
+}
+.overplanlogo{
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 2px solid #FFF;
+    bottom: 5%;
+    left: 5%;
+}
+.overplanlogo-top{
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 2px solid #FFF;
+    top: 16px;
+    left: 16px;
+}
+.overplanlogo-topnext{
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 2px solid #FFF;
+    top: 16px;
+    left: 64px;
+}
+
+.is-reglic {
+    margin-left: 2px;
+    width: 6px;
+    height: 6px;
+    background-color: #EA96FF;
+    border-radius: 40%;
+    display: inline-block;
+}
+
+.inputformcode {
+    padding: 2px;
+    font-family: monospace, 'Courier New', Helvetica;
+}
+
+
+/* START - table style*/
+.table-responsive {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.03);
+    border-radius: 3px;
+    border-top: 2px solid #bcc1c6;
+    background-color: #fff;
+    margin-bottom: 16px;
+}
+/* END - table style*/

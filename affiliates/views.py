@@ -5,7 +5,9 @@ from django.http import HttpResponseForbidden
 from django.views.generic import TemplateView, ListView
 from django.utils.decorators import method_decorator 
 from django.db.models import Sum
+from ranking.models import Rank
 from ranking.utils import update_affiliate_rank
+from referrals.models import Referral
 from training.models import TrainingModule
 from .models import Affiliate
 from products.models import AffiliateProductLink, Product, ProductPurchase
@@ -22,7 +24,7 @@ class RoleBasedDashboardView(TemplateView):
         elif request.user.user_type == 'affiliate':
             return redirect('affiliate_dashboard')
         return super().dispatch(request, *args, **kwargs)
-
+    
 @method_decorator(login_required, name='dispatch')
 class AffiliateDashboardView(ListView):
     """Affiliate-specific dashboard."""
@@ -37,32 +39,96 @@ class AffiliateDashboardView(ListView):
         """Add context data for dashboard metrics and related data."""
         context = super().get_context_data(**kwargs)
         affiliate = self.request.user.affiliate
-        
+
         # Update the affiliate's rank
         update_affiliate_rank(affiliate)
-        current_rank = affiliate.rank.current_rank if hasattr(affiliate, 'rank') else None
 
-        # Add additional context variables
+        # Current rank details
+        current_rank = affiliate.rank.current_rank if hasattr(affiliate, 'rank') else None
+        rank_rewards = current_rank.reward if current_rank else 0
+
+        # Immediate personal referrals
+        personal_referrals = Affiliate.objects.filter(referred_by=affiliate).count()
+
+        # Total referrals including downline (recursive relationships)
+        total_referrals = Affiliate.objects.filter(
+            referred_by__in=Affiliate.objects.filter(referred_by=affiliate)
+        ).count() + personal_referrals
+
+        # Next rank details
+        next_rank = (
+            Rank.objects.filter(
+                is_active=True,
+                min_personal_referrals__gt=(current_rank.min_personal_referrals if current_rank else 0),
+            )
+            .order_by('min_personal_referrals', 'min_total_referrals')
+            .first()
+        )
+
+        # Calculate earnings
+        product_commissions = ProductPurchase.objects.filter(affiliate=affiliate).aggregate(
+            total=Sum('commission_earned')
+        )['total'] or 0
+
+        referral_commissions = Referral.objects.filter(affiliate=affiliate).aggregate(
+            total=Sum('commission_earned')
+        )['total'] or 0
+
+        total_earnings = product_commissions + referral_commissions + rank_rewards
+
+        # Wallet balance (considering payouts) 
+        total_withdrawn = affiliate.payouts.aggregate(total=Sum('amount'))['total'] or 0
+        wallet_balance = total_earnings - total_withdrawn
+        # Conversion rate calculation
+        total_clicks = AffiliateProductLink.objects.filter(affiliate=affiliate).aggregate(
+            total_clicks=Sum('clicks')
+        )['total_clicks'] or 0
+
+        conversions = ProductPurchase.objects.filter(affiliate=affiliate).count()
+        conversion_rate = (conversions / total_clicks * 100) if total_clicks > 0 else 0
+
+        # Sponsor details
+        sponsor = affiliate.referred_by
+
+        # Recent referrals
+        recent_referrals = Affiliate.objects.filter(referred_by=affiliate).order_by('-created_at')[:5]
+
+        # Add context variables
         context.update({
-            'display_name': self.request.user.full_name or self.request.user.username, 
+            'display_name': self.request.user.full_name or self.request.user.username,
             'rank': current_rank.title if current_rank else "No Rank",
             'rank_logo': current_rank.logo.url if current_rank and current_rank.logo else None,
-            'rank_reward': current_rank.reward if current_rank else 0,    
-            'referrals': Affiliate.objects.filter(referred_by=affiliate),  # Downline tracking
-            'links': AffiliateProductLink.objects.filter(affiliate=affiliate),  # Affiliate links
-            'link_clicks': AffiliateProductLink.objects.filter(affiliate=affiliate).aggregate(
-                total_clicks=Sum('clicks')
-            )['total_clicks'] or 0,
-            'total_earnings': ProductPurchase.objects.filter(affiliate=affiliate).aggregate(
-                total=Sum('amount')
-            )['total'] or 0,
+            'rank_reward': rank_rewards,
+            'next_rank': next_rank.title if next_rank else "No further ranks available",
+            'next_rank_min_personal_referrals': next_rank.min_personal_referrals if next_rank else None,
+            'next_rank_min_total_referrals': next_rank.min_total_referrals if next_rank else None,
+            'product_commissions': product_commissions,
+            'referral_commissions': referral_commissions,
+            'total_earnings': total_earnings,
+            'wallet_balance': wallet_balance,
             'total_products_sold': ProductPurchase.objects.filter(affiliate=affiliate).count(),
-            'training_modules': TrainingModule.objects.all(),  # Add training modules if available
-            'year': now().year,  # Current year
+            'referrals': Affiliate.objects.filter(referred_by=affiliate),  # Downline tracking
+            'personal_referrals': personal_referrals,
+            'total_referrals': total_referrals,
+            'affiliate_products': Product.objects.filter(affiliateproductlink__affiliate=affiliate),
+            'training_modules': TrainingModule.objects.all(),
+            'total_clicks': total_clicks,
+            'conversion_rate': conversion_rate,
+            'register_date': affiliate.created_at,
+            'sponsor_name': sponsor.user.full_name if sponsor else "No Sponsor",
+            'sponsor_email': sponsor.user.email if sponsor else "N/A",
+            'sponsor_phone': sponsor.phone if sponsor and hasattr(sponsor, 'phone') else "N/A",
+            'sponsor_location': sponsor.location if sponsor and hasattr(sponsor, 'location') else "N/A",
+            'recent_referrals': recent_referrals,
+            'performance_chart_labels': ['Jan', 'Feb', 'Mar', 'Apr'],  # Replace with actual data
+            'performance_chart_referrals': [10, 20, 15, 30],
+            'performance_chart_products': [5, 8, 10, 12],
+            'performance_chart_clicks': [50, 70, 90, 110],
+            'year': now().year,
         })
 
         return context
-    
+
 @method_decorator(login_required, name='dispatch')
 class AdminDashboardView(ListView):
     """Admin-specific dashboard."""
@@ -90,13 +156,32 @@ def update_affiliate_profile(request):
 
 @login_required
 def affiliate_earnings(request):
-    if request.user.user_type != 'affiliate':
-        return HttpResponseForbidden("You are not authorized to access this page.")
+    affiliate = request.user.affiliate
 
-    earnings = ProductPurchase.objects.filter(affiliate__user=request.user)
-    total_earnings = sum(purchase.amount for purchase in earnings)
-    
-    return render(request, 'affiliates/earnings.html', {'earnings': earnings, 'total_earnings': total_earnings})
+    # Calculate earnings
+    referral_earnings = Referral.objects.filter(
+        affiliate=affiliate, referred_user__isnull=False
+    ).aggregate(total=Sum('commission_earned'))['total'] or 0
+
+    product_earnings = ProductPurchase.objects.filter(
+        affiliate=affiliate
+    ).aggregate(total=Sum('commission_earned'))['total'] or 0
+
+    rank_reward = affiliate.rank.current_rank.reward if affiliate.rank.current_rank else 0
+    total_earnings = referral_earnings + product_earnings + rank_reward
+
+    # Fetch individual entries for breakdown
+    referrals = Referral.objects.filter(affiliate=affiliate, referred_user__isnull=False)
+    product_purchases = ProductPurchase.objects.filter(affiliate=affiliate)
+
+    return render(request, 'affiliates/earnings.html', {
+        'total_product_earnings': product_earnings,
+        'total_referral_earnings': referral_earnings,
+        'rank_reward': rank_reward,
+        'total_earnings': total_earnings,
+        'referrals': referrals,
+        'product_purchases': product_purchases,
+    })
 
 @login_required
 def affiliate_training(request):
@@ -169,3 +254,4 @@ def delete_affiliate(request, pk):
         affiliate.delete()
         return redirect('admin_dashboard')
     return render(request, 'affiliates/confirm_delete.html', {'affiliate': affiliate})
+

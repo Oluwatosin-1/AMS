@@ -13,8 +13,8 @@ from .views import (
 )
 
 urlpatterns = [ 
-    path('dashboard/', RoleBasedDashboardView.as_view(), name='role_based_dashboard'),
-    path('dashboard/affiliate/', AffiliateDashboardView.as_view(), name='affiliate_dashboard'),
+    path('admin_dashboard/', RoleBasedDashboardView.as_view(), name='role_based_dashboard'),
+    path('dashboard/', AffiliateDashboardView.as_view(), name='affiliate_dashboard'),
     path('update-profile/', update_affiliate_profile, name='update_affiliate_profile'),
     path('affiliate-links/list/', list_affiliate_links, name='affiliate_links'),
     path('downline/', view_downline, name='view_downline'),  # Add this if missing

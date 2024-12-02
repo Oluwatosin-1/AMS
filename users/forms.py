@@ -16,13 +16,15 @@ class UserProfileForm(forms.ModelForm):
 
 
 class AffiliateRegistrationForm(UserCreationForm):
+    first_name = forms.CharField(max_length=30, required=True)
+    last_name = forms.CharField(max_length=30, required=True)
     referred_by = forms.ModelChoiceField(
         queryset=Affiliate.objects.all(), required=False, widget=forms.HiddenInput()
     )
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'password1', 'password2', 'referred_by']
+        fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2', 'referred_by']
 
     def __init__(self, *args, **kwargs):
         referrer = kwargs.pop('referrer', None)

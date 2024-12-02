@@ -1,0 +1,12 @@
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from ranking.utils import update_affiliate_rank
+from referrals.models import Referral
+
+@receiver(post_save, sender=Referral)
+def handle_new_referral(sender, instance, created, **kwargs):
+    """Signal to update the rank of the affiliate after a new referral."""
+    if created:
+        referrer = instance.affiliate
+        referrer.increase_referrals()
+        update_affiliate_rank(referrer)

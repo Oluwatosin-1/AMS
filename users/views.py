@@ -10,6 +10,10 @@ from django.contrib.auth import logout
 from django.contrib import messages
 # Create your views here.
 
+def home(request):
+    """Display the home page."""
+    return render(request, 'index2.html')
+
 def register_user(request):
     """Register a new user and handle referrals."""
     referrer = None
@@ -17,13 +21,9 @@ def register_user(request):
     # Capture referral ID from query parameters
     ref = request.GET.get('ref')
     if ref:
-        print(f"Referral ID: {ref}")
         referrer = Affiliate.objects.filter(id=ref).first()
-        if referrer:
-            print(f"Referrer found: {referrer.user.username}") 
     else:
-        print("Referrer not found.")
-        # Use the first admin as the default referrer if no referral ID is provided
+        # Default to the first admin as referrer
         admin_user = CustomUser.objects.filter(user_type='admin').first()
         if admin_user:
             referrer = Affiliate.objects.filter(user=admin_user).first()
@@ -31,18 +31,19 @@ def register_user(request):
     if request.method == 'POST':
         user_form = AffiliateRegistrationForm(request.POST)
         if user_form.is_valid():
+            # Create user
             user = user_form.save(commit=False)
-            user.user_type = 'affiliate'  # Default user type
+            user.user_type = 'affiliate'
+            user.full_name = f"{user_form.cleaned_data['first_name']} {user_form.cleaned_data['last_name']}"
             user.save()
-
-            # Create the Affiliate profile and link to the referrer
+            # Create affiliate profile and link referrer
             affiliate = Affiliate.objects.create(user=user, referred_by=referrer)
 
-            # Update the referrer's referral count
+            # Update referrer's referrals
             if referrer:
                 referrer.increase_referrals()
 
-            login(request, user)  # Automatically log the user in
+            login(request, user)  # Log in the user
             return redirect('affiliate_dashboard')
     else:
         user_form = AffiliateRegistrationForm()

@@ -112,3 +112,11 @@ def create_product(request):
 
 class PurchaseSuccessView(TemplateView):
     template_name = 'products/purchase_success.html'
+
+# Store View
+@login_required
+def store(request):
+    if request.user.user_type != 'affiliate':
+        return HttpResponseForbidden("You are not authorized to access this page.")
+    products = Product.objects.all()
+    return render(request, 'affiliates/store.html', {'products': products})

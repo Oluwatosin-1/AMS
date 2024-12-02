@@ -1,0 +1,116 @@
+{% load static %}
+<div class="navbar-bg"></div>
+<nav class="navbar navbar-expand-lg main-navbar">
+  <div class="mr-auto">
+    <ul class="navbar-nav mr-3">
+      <li>
+        <a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"
+          ><i class="fas fa-bars"></i
+        ></a>
+      </li>
+    </ul>
+  </div>
+  <ul class="navbar-nav">
+    <li><div class="badge badge-danger">Demo Mode</div></li>
+  </ul>
+  <ul class="navbar-nav">
+    <li><div class="badge badge-danger">Debug Mode</div></li>
+  </ul>
+  <ul class="navbar-nav navbar-right">
+    <li class="dropdown dropdown-list-toggle">
+      <a
+        href="#"
+        data-toggle="dropdown"
+        class="nav-link notification-toggle nav-link-lg"
+      >
+        <div class="d-block d-md-none badge badge-light">
+          <span class="text-uppercase">en</span>
+        </div>
+        <div class="d-none d-md-block badge badge-light">English</div>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right">
+        <div class="dropdown-title">Language</div>
+        <a
+          href="index.php?hal=dashboard&amp;lang=en&amp;langdt=4a6905e347b7d673b39756e047eca96184380935cc052590"
+          class="dropdown-item has-icon"
+          ><i class="fas fa-check"></i> English</a
+        ><a
+          href="index.php?hal=dashboard&amp;lang=es&amp;langdt=4a6905e347b7d673b39756e047eca96184380935cc052590"
+          class="dropdown-item has-icon"
+          ><i class="fas fa-minus"></i> Spanish</a
+        ><a
+          href="index.php?hal=dashboard&amp;lang=ru&amp;langdt=4a6905e347b7d673b39756e047eca96184380935cc052590"
+          class="dropdown-item has-icon"
+          ><i class="fas fa-minus"></i> Russian</a
+        ><a
+          href="index.php?hal=dashboard&amp;lang=ha&amp;langdt=4a6905e347b7d673b39756e047eca96184380935cc052590"
+          class="dropdown-item has-icon"
+          ><i class="fas fa-minus"></i> Hausa</a
+        ><a
+          href="index.php?hal=dashboard&amp;lang=my&amp;langdt=4a6905e347b7d673b39756e047eca96184380935cc052590"
+          class="dropdown-item has-icon"
+          ><i class="fas fa-minus"></i> Malay</a
+        ><a
+          href="index.php?hal=dashboard&amp;lang=pt&amp;langdt=4a6905e347b7d673b39756e047eca96184380935cc052590"
+          class="dropdown-item has-icon"
+          ><i class="fas fa-minus"></i> Portuguese</a
+        ><a
+          href="index.php?hal=dashboard&amp;lang=tl&amp;langdt=4a6905e347b7d673b39756e047eca96184380935cc052590"
+          class="dropdown-item has-icon"
+          ><i class="fas fa-minus"></i> Filipino</a
+        ><a
+          href="index.php?hal=dashboard&amp;lang=ur&amp;langdt=4a6905e347b7d673b39756e047eca96184380935cc052590"
+          class="dropdown-item has-icon"
+          ><i class="fas fa-minus"></i> Urdu</a
+        ><a
+          href="index.php?hal=dashboard&amp;lang=hi&amp;langdt=4a6905e347b7d673b39756e047eca96184380935cc052590"
+          class="dropdown-item has-icon"
+          ><i class="fas fa-minus"></i> Hindi</a
+        ><a
+          href="index.php?hal=dashboard&amp;lang=ja&amp;langdt=4a6905e347b7d673b39756e047eca96184380935cc052590"
+          class="dropdown-item has-icon"
+          ><i class="fas fa-minus"></i> Japanese</a
+        ><a
+          href="index.php?hal=dashboard&amp;lang=fr&amp;langdt=4a6905e347b7d673b39756e047eca96184380935cc052590"
+          class="dropdown-item has-icon"
+          ><i class="fas fa-minus"></i> French</a
+        ><a
+          href="index.php?hal=dashboard&amp;lang=ko&amp;langdt=4a6905e347b7d673b39756e047eca96184380935cc052590"
+          class="dropdown-item has-icon"
+          ><i class="fas fa-minus"></i> Korean</a
+        >
+      </div>
+    </li>
+
+    <li class="dropdown">
+      <a
+        href="#"
+        data-toggle="dropdown"
+        class="nav-link dropdown-toggle nav-link-lg nav-link-user"
+      >
+        <img
+          alt="image"
+          src="{% static 'assets/image/mbr_image_1.jpg' %}"
+          class="rounded-circle mr-1"
+        />
+        <div class="d-sm-none d-lg-inline-block">
+          <span class="text-capitalize">demo</span>
+        </div></a
+      >
+      <div class="dropdown-menu dropdown-menu-right">
+        <div class="dropdown-title">Logged in 1 second</div>
+        <a
+          href="index.php?hal=accountcfg#cfgtab3"
+          class="dropdown-item has-icon"
+        >
+          <i class="far fa-user-circle"></i> Profile
+        </a>
+        <div class="dropdown-divider"></div>
+        <a href="logout.php?un=demo" class="dropdown-item has-icon text-danger">
+          <i class="fas fa-door-open"></i> Logout
+        </a>
+      </div>
+    </li>
+  </ul>
+</nav>
+{% include 'sidebar.html' %}

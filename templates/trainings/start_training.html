@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<h2>Start Training: {{ module.title }}</h2>
+
+<div>
+    <p><strong>Description:</strong> {{ module.content }}</p>
+    <p><strong>Estimated Completion Time:</strong> {{ module.completion_time }} minutes</p>
+    {% if module.file %}
+        <p><strong>Download Material:</strong> 
+            <a href="{{ module.file.url }}" download>{{ module.file.name }}</a>
+        </p>
+    {% endif %}
+</div>
+
+<form method="POST" action="{% url 'complete_training_module' module.id %}">
+    {% csrf_token %}
+    <button type="submit">Mark as Completed</button>
+</form>
+{% endblock %}

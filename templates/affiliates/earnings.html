@@ -1,20 +1,47 @@
-{% load static %}
-<link rel="stylesheet" href="{% static 'css/styles.css' %}">
-
 <h2>Your Earnings</h2>
+
+<h3>Earnings Overview</h3>
+<ul>
+    <li><strong>Total Product Commissions:</strong> ${{ total_product_earnings }}</li>
+    <li><strong>Total Referral Commissions:</strong> ${{ total_referral_earnings }}</li>
+    <li><strong>Rank Rewards:</strong> ${{ rank_reward }}</li>
+    <li><strong>Total Earnings:</strong> ${{ total_earnings }}</li>
+</ul>
+
+<h3>Earnings Breakdown</h3>
 <table>
-    <tr>
-        <th>Product</th>
-        <th>Client Email</th>
-        <th>Amount</th>
-        <th>Purchase Date</th>
-    </tr>
-    {% for earning in earnings %}
+    <thead>
         <tr>
-            <td>{{ earning.product.name }}</td>
-            <td>{{ earning.client_email }}</td>
-            <td>{{ earning.amount }}</td>
-            <td>{{ earning.purchased_at }}</td>
+            <th>Source</th>
+            <th>Details</th>
+            <th>Amount</th>
+            <th>Date</th>
         </tr>
-    {% endfor %}
+    </thead>
+    <tbody>
+        {% for referral in referrals %}
+            <tr>
+                <td>Referral Commission</td>
+                <td>Referral: {{ referral.client_email }}</td>
+                <td>${{ referral.commission_earned }}</td>
+                <td>{{ referral.referred_at|date:"Y-m-d" }}</td>
+            </tr>
+        {% endfor %}
+        {% for purchase in product_purchases %}
+            <tr>
+                <td>Product Commission</td>
+                <td>{{ purchase.product.name }} purchased by {{ purchase.client_email }}</td>
+                <td>${{ purchase.commission_earned }}</td>
+                <td>{{ purchase.purchased_at|date:"Y-m-d" }}</td>
+            </tr>
+        {% endfor %}
+        {% if rank_reward %}
+            <tr>
+                <td>Rank Reward</td>
+                <td>Achieved Rank Reward</td>
+                <td>${{ rank_reward }}</td>
+                <td>N/A</td>
+            </tr>
+        {% endif %}
+    </tbody>
 </table>

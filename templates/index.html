@@ -1,1460 +1,281 @@
+{% load static %}
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no"
-      name="viewport"
-    />
-    <title>UniMatrix Membership Admin CP</title>
-
-    <meta
-      name="description"
-      content="cheap and affordable unilevel, matrix, and membership script"
-    />
-    <meta
-      name="keywords"
-      content="MLM script, unilevel plan, matrix program, membership script"
-    />
-    <meta name="author" content="MLMScript.net" />
-
-    <link
-      rel="shortcut icon"
-      type="image/png"
-      href="../assets/image/favicon.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="../assets/image/favicon.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="../assets/image/favicon.png"
-    />
-
-    <!-- General CSS Files -->
-    <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
-    <link
-      rel="stylesheet"
-      href="../assets/fellow/fontawesome5121/css/all.min.css"
-    />
-
-    <!-- CSS Libraries -->
-    <link rel="stylesheet" href="../assets/css/pace-theme-minimal.css" />
-    <link rel="stylesheet" href="../assets/css/toastr.min.css" />
-    <link rel="stylesheet" href="../assets/css/select2.min.css" />
-
-    <!-- Template CSS -->
-    <link rel="stylesheet" href="../assets/css/fontmuli.css" />
-    <link rel="stylesheet" href="../assets/css/colors/o1/style.css" />
-    <link rel="stylesheet" href="../assets/css/colors/o1/components.css" />
-    <link rel="stylesheet" href="../assets/css/custom.css" />
-    <link rel="stylesheet" href="../assets/css/notifytoast.css" />
-
-    <link rel="stylesheet" href="../assets/_demosrc/demo_colorchanger.css" />
-
-    <!-- General JS Scripts -->
-    <script src="../assets/js/jquery-3.4.1.min.js"></script>
-    <script src="../assets/js/popper.min.js"></script>
-    <script src="../assets/js/bootstrap.min.js"></script>
-    <script src="../assets/js/jquery.nicescroll.min.js"></script>
-    <script src="../assets/js/moment.min.js"></script>
-    <script src="../assets/js/pace.min.js"></script>
-    <script src="../assets/js/toastr.min.js"></script>
-    <script src="../assets/js/select2.full.min.js"></script>
-    <script src="../assets/js/bootbox.min.js"></script>
-
-    <!-- JS Libraies -->
-    <script src="../assets/js/stisla.js"></script>
-
-    <!-- include summernote css/js -->
-    <link href="../assets/css/summernote-bs4.css" rel="stylesheet" />
-    <script src="../assets/js/summernote-bs4.min.js"></script>
-
-    <style type="text/css">
-      /* Chart.js */
-      @keyframes chartjs-render-animation {
-        from {
-          opacity: 0.99;
-        }
-        to {
-          opacity: 1;
-        }
-      }
-      .chartjs-render-monitor {
-        animation: chartjs-render-animation 1ms;
-      }
-      .chartjs-size-monitor,
-      .chartjs-size-monitor-expand,
-      .chartjs-size-monitor-shrink {
-        position: absolute;
-        direction: ltr;
-        left: 0;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        overflow: hidden;
-        pointer-events: none;
-        visibility: hidden;
-        z-index: -1;
-      }
-      .chartjs-size-monitor-expand > div {
-        position: absolute;
-        width: 1000000px;
-        height: 1000000px;
-        left: 0;
-        top: 0;
-      }
-      .chartjs-size-monitor-shrink > div {
-        position: absolute;
-        width: 200%;
-        height: 200%;
-        left: 0;
-        top: 0;
-      }
-    </style>
-    <link
-      href="chrome-extension://alhgpfoeiimagjlnfekdhkjlkiomcapa/js/css/inject.css"
-      rel="stylesheet"
-      type="text/css"
-      data-apio="true"
-    />
-    <link
-      data-apio="true"
-      rel="stylesheet"
-      type="text/css"
-      href="chrome-extension://alhgpfoeiimagjlnfekdhkjlkiomcapa/js/css/a_chrome-extension_inject_global_module_scss.css"
-    />
-  </head>
-
-  <body class="pace-done sidebar-gone">
-    <div class="pace pace-inactive">
-      <div
-        class="pace-progress"
-        data-progress-text="100%"
-        data-progress="99"
-        style="transform: translate3d(100%, 0px, 0px)"
-      >
-        <div class="pace-progress-inner"></div>
-      </div>
-      <div class="pace-activity"></div>
-    </div>
-    <div id="app">
-      <div class="main-wrapper">
-        <div class="navbar-bg"></div>
-        <nav class="navbar navbar-expand-lg main-navbar">
-          <div class="mr-auto">
-            <ul class="navbar-nav mr-3">
-              <li>
-                <a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"
-                  ><i class="fas fa-bars"></i
-                ></a>
-              </li>
-              <li>
-                <a
-                  href="https://www.mlmscript.net/demo/unimatrix"
-                  class="nav-link nav-link-lg"
-                  data-toggle="tooltip"
-                  title=""
-                  target="_blank"
-                  data-original-title="https://www.mlmscript.net/demo/unimatrix"
-                  ><i class="fas fa-globe-asia"></i
-                ></a>
-              </li>
-            </ul>
-          </div>
-          <ul class="navbar-nav">
-            <li><div class="badge badge-danger">Demo Mode</div></li>
-          </ul>
-          <a href="index.php?hal=payplancfg"
-            ><span class="badge badge-secondary">Unilevel ↓5</span></a
-          >
-          <ul class="navbar-nav">
-            <li><div class="badge badge-danger">Debug Mode</div></li>
-          </ul>
-          <ul class="navbar-nav navbar-right">
-            <li class="dropdown dropdown-list-toggle">
-              <a
-                href="#"
-                data-toggle="dropdown"
-                class="nav-link notification-toggle nav-link-lg"
-              >
-                <div class="d-block d-md-none badge badge-light">
-                  <span class="text-uppercase">en</span>
-                </div>
-                <div class="d-none d-md-block badge badge-light">English</div>
-              </a>
-              <div class="dropdown-menu dropdown-menu-right">
-                <div class="dropdown-title">Language</div>
-                <a
-                  href="index.php?hal=dashboard&amp;lang=en&amp;langdt=14320708834c57a65a44c2925cec71044996e9d2276153f6"
-                  class="dropdown-item has-icon"
-                  ><i class="fas fa-check"></i> English</a
-                ><a
-                  href="index.php?hal=dashboard&amp;lang=es&amp;langdt=14320708834c57a65a44c2925cec71044996e9d2276153f6"
-                  class="dropdown-item has-icon"
-                  ><i class="fas fa-minus"></i> Spanish</a
-                ><a
-                  href="index.php?hal=dashboard&amp;lang=ru&amp;langdt=14320708834c57a65a44c2925cec71044996e9d2276153f6"
-                  class="dropdown-item has-icon"
-                  ><i class="fas fa-minus"></i> Russian</a
-                ><a
-                  href="index.php?hal=dashboard&amp;lang=ha&amp;langdt=14320708834c57a65a44c2925cec71044996e9d2276153f6"
-                  class="dropdown-item has-icon"
-                  ><i class="fas fa-minus"></i> Hausa</a
-                ><a
-                  href="index.php?hal=dashboard&amp;lang=my&amp;langdt=14320708834c57a65a44c2925cec71044996e9d2276153f6"
-                  class="dropdown-item has-icon"
-                  ><i class="fas fa-minus"></i> Malay</a
-                ><a
-                  href="index.php?hal=dashboard&amp;lang=pt&amp;langdt=14320708834c57a65a44c2925cec71044996e9d2276153f6"
-                  class="dropdown-item has-icon"
-                  ><i class="fas fa-minus"></i> Portuguese</a
-                ><a
-                  href="index.php?hal=dashboard&amp;lang=tl&amp;langdt=14320708834c57a65a44c2925cec71044996e9d2276153f6"
-                  class="dropdown-item has-icon"
-                  ><i class="fas fa-minus"></i> Filipino</a
-                ><a
-                  href="index.php?hal=dashboard&amp;lang=ur&amp;langdt=14320708834c57a65a44c2925cec71044996e9d2276153f6"
-                  class="dropdown-item has-icon"
-                  ><i class="fas fa-minus"></i> Urdu</a
-                ><a
-                  href="index.php?hal=dashboard&amp;lang=hi&amp;langdt=14320708834c57a65a44c2925cec71044996e9d2276153f6"
-                  class="dropdown-item has-icon"
-                  ><i class="fas fa-minus"></i> Hindi</a
-                ><a
-                  href="index.php?hal=dashboard&amp;lang=ja&amp;langdt=14320708834c57a65a44c2925cec71044996e9d2276153f6"
-                  class="dropdown-item has-icon"
-                  ><i class="fas fa-minus"></i> Japanese</a
-                ><a
-                  href="index.php?hal=dashboard&amp;lang=fr&amp;langdt=14320708834c57a65a44c2925cec71044996e9d2276153f6"
-                  class="dropdown-item has-icon"
-                  ><i class="fas fa-minus"></i> French</a
-                ><a
-                  href="index.php?hal=dashboard&amp;lang=ko&amp;langdt=14320708834c57a65a44c2925cec71044996e9d2276153f6"
-                  class="dropdown-item has-icon"
-                  ><i class="fas fa-minus"></i> Korean</a
-                >
-              </div>
-            </li>
-
-            <li class="dropdown">
-              <a
-                href="#"
-                data-toggle="dropdown"
-                class="nav-link dropdown-toggle nav-link-lg nav-link-user"
-              >
-                <img
-                  alt="image"
-                  src="../assets/imagextra/admimage.jpg"
-                  class="rounded-circle mr-1"
-                />
-                <div class="d-sm-none d-lg-inline-block">
-                  <span class="text-capitalize">Administrator</span>
-                </div></a
-              >
-              <div class="dropdown-menu dropdown-menu-right">
-                <div class="dropdown-title">Logged in 1 second</div>
-                <a
-                  href="index.php?hal=generalcfg#cfgtab3"
-                  class="dropdown-item has-icon"
-                >
-                  <i class="far fa-user-circle"></i> Profile
-                </a>
-                <a
-                  href="index.php?hal=generalcfg#cfgtab1"
-                  class="dropdown-item has-icon"
-                >
-                  <i class="fas fa-cogs"></i> Settings
-                </a>
-                <a href="index.php?hal=updates" class="dropdown-item has-icon">
-                  <i class="fas fa-thumbs-up"></i> Update
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="logout.php" class="dropdown-item has-icon text-danger">
-                  <i class="fas fa-door-open"></i> Logout
-                </a>
-              </div>
-            </li>
-          </ul>
-        </nav>
-        <div
-          class="main-sidebar"
-          tabindex="1"
-          style="overflow: hidden; outline: none"
-        >
-          <aside id="sidebar-wrapper">
-            <div class="sidebar-brand">
-              <a href="index.php">Admin CP</a>
-            </div>
-            <div class="sidebar-brand sidebar-brand-sm">
-              <a href="index.php">ACP</a>
-            </div>
-            <ul class="sidebar-menu">
-              <li class="menu-header">Main</li>
-              <li class="active">
-                <a class="nav-link" href="index.php?hal=dashboard"
-                  ><i class="fas fa-chart-line"></i><span>Dashboard</span></a
-                >
-              </li>
-
-              <li class="menu-header">Member</li>
-              <li>
-                <a class="nav-link" href="index.php?hal=userlist"
-                  ><i class="fas fa-users"></i><span>Manage Member</span></a
-                >
-              </li>
-              <li>
-                <a class="nav-link" href="index.php?hal=historylist"
-                  ><i class="fas fa-cash-register"></i>
-                  <span>Transaction History</span></a
-                >
-              </li>
-              <li>
-                <a class="nav-link" href="index.php?hal=withdrawlist"
-                  ><i class="fas fa-hand-holding-usd"></i>
-                  <span>Withdraw Request</span></a
-                >
-              </li>
-              <li>
-                <a class="nav-link" href="index.php?hal=genealogylist"
-                  ><i class="fas fa-sitemap"></i>
-                  <span>Member Genealogy</span></a
-                >
-              </li>
-              <li class="menu-header">Store</li>
-              <li>
-                <a class="nav-link" href="index.php?hal=saleslist"
-                  ><i class="fas fa-store"></i> <span>Sales History</span></a
-                >
-              </li>
-              <li>
-                <a class="nav-link" href="index.php?hal=itemlist"
-                  ><i class="fas fa-boxes"></i><span>Manage Product</span></a
-                >
-              </li>
-              <li class="menu-header">Utility</li>
-              <li>
-                <a class="nav-link" href="index.php?hal=digifile"
-                  ><i class="fas fa-cloud-download-alt"></i>
-                  <span>Digital Download</span></a
-                >
-              </li>
-              <li>
-                <a class="nav-link" href="index.php?hal=digicontent"
-                  ><i class="fas fa-window-restore"></i
-                  ><span>Digital Content</span></a
-                >
-              </li>
-              <li>
-                <a class="nav-link" href="index.php?hal=mmbanner"
-                  ><i class="fas fa-puzzle-piece"></i>
-                  <span>Banner Promotion</span></a
-                >
-              </li>
-              <li>
-                <a class="nav-link" href="index.php?hal=newsletter"
-                  ><i class="fas fa-paper-plane"></i> <span>Newsletter</span></a
-                >
-              </li>
-              <li>
-                <a class="nav-link" href="index.php?hal=getstart"
-                  ><i class="fas fa-flag-checkered"></i>
-                  <span>Getting Started</span></a
-                >
-              </li>
-              <li>
-                <a class="nav-link" href="index.php?hal=termscon"
-                  ><i class="fas fa-exclamation-circle"></i>
-                  <span>Terms Conditions</span></a
-                >
-              </li>
-
-              <li class="menu-header">Setting</li>
-              <li>
-                <a class="nav-link" href="index.php?hal=notifylist"
-                  ><i class="fas fa-bullhorn"></i
-                  ><span>Notification List</span></a
-                >
-              </li>
-              <li>
-                <a class="nav-link" href="index.php?hal=generalcfg"
-                  ><i class="fas fa-tools"></i> <span>General Settings</span></a
-                >
-              </li>
-              <li>
-                <a class="nav-link" href="index.php?hal=payplancfg"
-                  ><i class="fas fa-gem"></i><span>Payplan Settings</span></a
-                >
-              </li>
-              <li>
-                <a class="nav-link" href="index.php?hal=ranklist"
-                  ><i class="fas fa-medal"></i><span>Member Ranks</span></a
-                >
-              </li>
-              <li>
-                <a class="nav-link" href="index.php?hal=paymentopt"
-                  ><i class="fas fa-money-bill-wave"></i
-                  ><span>Payment Options</span></a
-                >
-              </li>
-              <li>
-                <a class="nav-link" href="index.php?hal=managegroup"
-                  ><i class="fas fa-object-ungroup"></i
-                  ><span>Manage Group</span></a
-                >
-              </li>
-              <li>
-                <a class="nav-link" href="index.php?hal=languagelist"
-                  ><i class="fas fa-flag"></i><span>Manage Language</span></a
-                >
-              </li>
-            </ul>
-
-            <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
-              <a
-                href="logout.php"
-                class="btn btn-danger btn-lg btn-block btn-icon-split"
-              >
-                <i class="fas fa-door-open"></i> Logout
-              </a>
-            </div>
-          </aside>
-        </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affiliate Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div id="wrapper">
         <!-- Main Content -->
-        <div class="main-content" style="min-height: 492px">
-          <section class="section">
-            <div class="section-header">
-              <h1><i class="fa fa-fw fa-chart-line"></i> Dashboard</h1>
+        <div id="content">
+            <h1>Welcome, {{ display_name }}</h1>
+            <p>This is your affiliate dashboard. Below you can find an overview of your activities and access various sections to manage your account.</p>
+
+            <!-- Dashboard Overview -->
+            <div id="overview">
+                <h2>Dashboard Overview</h2>
+                <ul>
+                    <li><strong>Total Product Commissions:</strong> ${{ product_commissions }}</li>
+                    <li><strong>Total Referral Commissions:</strong> ${{ referral_commissions }}</li>
+                    <li><strong>Rank Rewards:</strong> ${{ rank_reward }}</li>
+                    <li><strong>Total Earnings:</strong> ${{ total_earnings }}</li>
+                    <li><strong>Number of Referrals:</strong> {{ referrals.count }}</li>
+                    <li><strong>Total Products Sold:</strong> {{ total_products_sold }}</li>
+                    <li><strong>Total Link Clicks:</strong> {{ link_clicks }}</li>
+                </ul>
+            </div> 
+            <!-- Affiliate Links -->
+            <div id="links">
+                <h2>Your Affiliate Links</h2>
+                {% if links %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Affiliate Link</th>
+                                <th>Clicks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for link in links %}
+                                <tr>
+                                    <td>{{ link.product.name }}</td>
+                                    <td><a href="{{ link.unique_url }}" target="_blank">{{ link.unique_url }}</a></td>
+                                    <td>{{ link.clicks }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>You have not generated any affiliate links yet. <a href="{% url 'affiliate_links' %}">Create links now</a>.</p>
+                {% endif %}
             </div>
 
-            <div class="section-body">
-              <div class="row">
-                <div class="col-lg-4 col-md-6 col-sm-6 col-12">
-                  <div class="card card-statistic-1">
-                    <a href="index.php?hal=userlist&amp;fltrby=reg">
-                      <div class="card-icon bg-info">
-                        <i class="far fa-address-book"></i>
-                      </div>
-                    </a>
-                    <div class="card-wrap">
-                      <div class="card-header">
-                        <h4>Registered</h4>
-                      </div>
-                      <div class="card-body">975</div>
+            <!-- Referral Link -->
+            <div id="referral-link">
+                <h2>Your Referral Link</h2>
+                <p><a href="{% url 'generate_referral_link' %}">Generate your referral link here</a> and share it to grow your network.</p>
+            </div>
+           <!-- Rank Information -->
+            <div id="rank">
+                <h2>Your Current Rank</h2>
+                {% if rank %}
+                    <div>
+                        <img src="{{ rank_logo }}" alt="{{ rank }}" style="width: 50px; height: 50px;">
+                        <p><strong>Rank:</strong> {{ rank }}</p> 
+                        <p><strong>Reward:</strong> ${{ rank_reward }}</p>
+                        {% if next_rank %}
+                            <p><strong>Next Rank:</strong> Work towards {{ next_rank.title }}!</p>
+                            <p><strong>Requirements:</strong> 
+                                Personal Referrals: {{ next_rank.min_personal_referrals }},
+                                Total Referrals: {{ next_rank.min_total_referrals }}
+                            </p>
+                        {% else %}
+                            <p>Congratulations! You have achieved the highest rank.</p>
+                        {% endif %}
                     </div>
-                  </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-6 col-12">
-                  <div class="card card-statistic-1">
-                    <a href="index.php?hal=userlist">
-                      <div class="card-icon bg-info">
-                        <i class="far fa-handshake"></i>
-                      </div>
-                    </a>
-                    <div class="card-wrap">
-                      <div class="card-header">
-                        <h4>Member</h4>
-                      </div>
-                      <div class="card-body">1025</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-6 col-12">
-                  <div class="card card-statistic-1">
-                    <a href="index.php?hal=historylist">
-                      <div class="card-icon bg-warning">
-                        <i class="far fa-money-bill-alt"></i>
-                      </div>
-                    </a>
-                    <div class="card-wrap">
-                      <div class="card-header">
-                        <h4>Income</h4>
-                      </div>
-                      <div class="card-body">₹42,851,026.73</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-lg-4 col-md-6 col-sm-6 col-12">
-                  <div class="card card-statistic-1">
-                    <a href="index.php?hal=itemlist">
-                      <div class="card-icon bg-info">
-                        <i class="far fa-hdd"></i>
-                      </div>
-                    </a>
-                    <div class="card-wrap">
-                      <div class="card-header">
-                        <h4>Product</h4>
-                      </div>
-                      <div class="card-body">40</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-6 col-12">
-                  <div class="card card-statistic-1">
-                    <a href="index.php?hal=saleslist">
-                      <div class="card-icon bg-info">
-                        <i class="far fa-list-alt"></i>
-                      </div>
-                    </a>
-                    <div class="card-wrap">
-                      <div class="card-header">
-                        <h4>Order</h4>
-                      </div>
-                      <div class="card-body">1417</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-6 col-12">
-                  <div class="card card-statistic-1">
-                    <a href="index.php?txadminfo=order&amp;hal=historylist">
-                      <div class="card-icon bg-warning">
-                        <i class="far fa-chart-bar"></i>
-                      </div>
-                    </a>
-                    <div class="card-wrap">
-                      <div class="card-header">
-                        <h4>Sales</h4>
-                      </div>
-                      <div class="card-body">₹40,787,693.73</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-lg-8 col-md-12 col-12 col-sm-12">
-                  <div class="card">
-                    <div class="card-header">
-                      <h4>Performance</h4>
-                    </div>
-                    <div class="card-body">
-                      <div class="chartjs-size-monitor">
-                        <div class="chartjs-size-monitor-expand">
-                          <div class=""></div>
-                        </div>
-                        <div class="chartjs-size-monitor-shrink">
-                          <div class=""></div>
-                        </div>
-                      </div>
-                      <canvas
-                        id="myChart"
-                        height="786"
-                        width="1230"
-                        style="display: block; height: 393px; width: 615px"
-                        class="chartjs-render-monitor"
-                      ></canvas>
-                    </div>
-                  </div>
-                  <div class="card">
-                    <div class="card-body">
-                      <div class="chartjs-size-monitor">
-                        <div class="chartjs-size-monitor-expand">
-                          <div class=""></div>
-                        </div>
-                        <div class="chartjs-size-monitor-shrink">
-                          <div class=""></div>
-                        </div>
-                      </div>
-                      <canvas
-                        id="myChart1"
-                        height="524"
-                        width="1230"
-                        style="display: block; height: 262px; width: 615px"
-                        class="chartjs-render-monitor"
-                      ></canvas>
-                    </div>
-                  </div>
-                  <div class="card">
-                    <div class="card-body">
-                      <div class="chartjs-size-monitor">
-                        <div class="chartjs-size-monitor-expand">
-                          <div class=""></div>
-                        </div>
-                        <div class="chartjs-size-monitor-shrink">
-                          <div class=""></div>
-                        </div>
-                      </div>
-                      <canvas
-                        id="myChart2"
-                        height="524"
-                        width="1230"
-                        style="display: block; height: 262px; width: 615px"
-                        class="chartjs-render-monitor"
-                      ></canvas>
-                    </div>
-                  </div>
-
-                  <div class="card">
-                    <div class="card-header">
-                      <h4>Overview</h4>
-                    </div>
-                    <div class="card-body">
-                      <div class="summary">
-                        <div class="summary-info">
-                          <h4>
-                            <span class="text-success"
-                              ><i class="fas fa-caret-up"></i></span
-                            >₹42,851,026.73
-                            <span class="text-danger"
-                              ><i class="fas fa-caret-down"></i></span
-                            >₹154,215.00
-                          </h4>
-                          <div class="text-muted">5349 total transactions</div>
-                          <h3 class="mt-2">
-                            <span class="text-info"></span>₹42,696,811.73 INR
-                          </h3>
-                          <div class="d-block mt-2">
-                            <a href="index.php?hal=historylist">View Details</a>
-                          </div>
-                        </div>
-                        <div class="summary-item">
-                          <h6>
-                            <span class="text-muted"
-                              >Recent 5 transactions</span
-                            >
-                          </h6>
-                          <ul class="list-unstyled list-unstyled-border">
-                            <li class="media">
-                              <i
-                                class="fa fa-2x fa-fw fa-question text-light mr-2"
-                              ></i>
-                              <div class="media-body">
-                                <div class="media-right">₹150.00 INR</div>
-                                <div class="media-title">Registration Fee</div>
-                                <div
-                                  class="float-right text-muted text-small"
-                                ></div>
-                                <div class="text-muted text-small">
-                                  2024-12-01 09:34:27
-                                </div>
-                              </div>
-                            </li>
-                          </ul>
-                          <ul class="list-unstyled list-unstyled-border">
-                            <li class="media">
-                              <i
-                                class="fa fa-2x fa-fw fa-question text-light mr-2"
-                              ></i>
-                              <div class="media-body">
-                                <div class="media-right">₹99.00 INR</div>
-                                <div class="media-title">Order TM ne</div>
-                                <div
-                                  class="float-right text-muted text-small"
-                                ></div>
-                                <div class="text-muted text-small">
-                                  2024-12-01 01:34:53
-                                </div>
-                              </div>
-                            </li>
-                          </ul>
-                          <ul class="list-unstyled list-unstyled-border">
-                            <li class="media">
-                              <i
-                                class="fa fa-2x fa-fw fa-check text-primary mr-2"
-                              ></i>
-                              <div class="media-body">
-                                <div class="media-right">₹100.00 INR</div>
-                                <div class="media-title">
-                                  Sales Commission [1]
-                                </div>
-                                <div class="float-right text-muted text-small">
-                                  WLN0101-341255-5695
-                                </div>
-                                <div class="text-muted text-small">
-                                  2024-12-01 01:34:39
-                                </div>
-                              </div>
-                            </li>
-                          </ul>
-                          <ul class="list-unstyled list-unstyled-border">
-                            <li class="media">
-                              <i
-                                class="fa fa-2x fa-fw fa-question text-light mr-2"
-                              ></i>
-                              <div class="media-body">
-                                <div class="media-right">₹150.00 INR</div>
-                                <div class="media-title">Registration Fee</div>
-                                <div
-                                  class="float-right text-muted text-small"
-                                ></div>
-                                <div class="text-muted text-small">
-                                  2024-11-30 18:04:36
-                                </div>
-                              </div>
-                            </li>
-                          </ul>
-                          <ul class="list-unstyled list-unstyled-border">
-                            <li class="media">
-                              <i
-                                class="fa fa-2x fa-fw fa-question text-light mr-2"
-                              ></i>
-                              <div class="media-body">
-                                <div class="media-right">₹150.00 INR</div>
-                                <div class="media-title">Registration Fee</div>
-                                <div
-                                  class="float-right text-muted text-small"
-                                ></div>
-                                <div class="text-muted text-small">
-                                  2024-11-30 15:23:04
-                                </div>
-                              </div>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-4 col-md-12 col-12 col-sm-12">
-                  <div class="card">
-                    <div class="card-body">
-                      <div class="chartjs-size-monitor">
-                        <div class="chartjs-size-monitor-expand">
-                          <div class=""></div>
-                        </div>
-                        <div class="chartjs-size-monitor-shrink">
-                          <div class=""></div>
-                        </div>
-                      </div>
-                      <canvas
-                        id="myChart3"
-                        height="1048"
-                        width="1230"
-                        style="display: block; height: 524px; width: 615px"
-                        class="chartjs-render-monitor"
-                      ></canvas>
-                    </div>
-                  </div>
-
-                  <div class="card">
-                    <div class="card-header">
-                      <h4>Withdrawal</h4>
-                      <div class="card-header-action">
-                        <a
-                          href="index.php?hal=withdrawlist"
-                          class="btn btn-primary"
-                          data-toggle="tooltip"
-                          title=""
-                          data-original-title="View All"
-                          ><i class="fa fa-ellipsis-h"></i
-                        ></a>
-                      </div>
-                    </div>
-                    <div class="card-body">
-                      <ul class="list-unstyled list-unstyled-border">
-                        <li class="media">
-                          <img
-                            class="mr-3 rounded-circle"
-                            width="48"
-                            src="../assets/imagextra/mbr_image_1.jpg"
-                            alt="avatar"
-                          />
-                          <div class="media-body">
-                            <div class="float-right text-small text-success">
-                              1 week ago
-                            </div>
-                            <div class="media-title">₹65.00</div>
-                            <div class="float-right media-title">
-                              <span
-                                class="badge badge-light"
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="Pending"
-                                ><i class="fa fa-fw fa-question"></i
-                              ></span>
-                            </div>
-                            <span class="text-small text-muted">
-                              <div>
-                                <a
-                                  href="index.php?hal=getuser&amp;getId=1&amp;getMpid=83"
-                                  data-toggle="tooltip"
-                                  title=""
-                                  data-original-title="Demo Tester"
-                                  >demo</a
-                                >
-                              </div>
-                              <div
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="demo*****@example.net"
-                              >
-                                demo*****@exam...
-                              </div>
-                            </span>
-                          </div>
-                        </li>
-                        <li class="media">
-                          <img
-                            class="mr-3 rounded-circle"
-                            width="48"
-                            src="../assets/imagextra/mbr_image_1.jpg"
-                            alt="avatar"
-                          />
-                          <div class="media-body">
-                            <div class="float-right text-small text-success">
-                              1 week ago
-                            </div>
-                            <div class="media-title">₹100.00</div>
-                            <div class="float-right media-title">
-                              <span
-                                class="badge badge-light"
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="Pending"
-                                ><i class="fa fa-fw fa-question"></i
-                              ></span>
-                            </div>
-                            <span class="text-small text-muted">
-                              <div>
-                                <a
-                                  href="index.php?hal=getuser&amp;getId=1&amp;getMpid=83"
-                                  data-toggle="tooltip"
-                                  title=""
-                                  data-original-title="Demo Tester"
-                                  >demo</a
-                                >
-                              </div>
-                              <div
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="demo*****@example.net"
-                              >
-                                demo*****@exam...
-                              </div>
-                            </span>
-                          </div>
-                        </li>
-                        <li class="media">
-                          <img
-                            class="mr-3 rounded-circle"
-                            width="48"
-                            src="../assets/imagextra/mbr_image_1.jpg"
-                            alt="avatar"
-                          />
-                          <div class="media-body">
-                            <div class="float-right text-small text-success">
-                              2 weeks ago
-                            </div>
-                            <div class="media-title">₹444.00</div>
-                            <div class="float-right media-title">
-                              <span
-                                class="badge badge-light"
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="Pending"
-                                ><i class="fa fa-fw fa-question"></i
-                              ></span>
-                            </div>
-                            <span class="text-small text-muted">
-                              <div>
-                                <a
-                                  href="index.php?hal=getuser&amp;getId=1&amp;getMpid=83"
-                                  data-toggle="tooltip"
-                                  title=""
-                                  data-original-title="Demo Tester"
-                                  >demo</a
-                                >
-                              </div>
-                              <div
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="demo*****@example.net"
-                              >
-                                demo*****@exam...
-                              </div>
-                            </span>
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div class="card">
-                    <div class="card-header">
-                      <h4>Recent Members</h4>
-                      <div class="card-header-action">
-                        <a
-                          href="index.php?hal=userlist"
-                          class="btn btn-primary"
-                          data-toggle="tooltip"
-                          title=""
-                          data-original-title="View All"
-                          ><i class="fa fa-ellipsis-h"></i
-                        ></a>
-                      </div>
-                    </div>
-                    <div class="card-body">
-                      <ul class="list-unstyled list-unstyled-border">
-                        <li class="media">
-                          <img
-                            class="mr-3 rounded-circle"
-                            width="48"
-                            src="../assets/image/mbr_defaultimage.jpg"
-                            alt="avatar"
-                          />
-                          <div class="media-body">
-                            <div class="float-right text-small text-success">
-                              3 hours ago
-                            </div>
-                            <div class="media-title">
-                              <a
-                                href="index.php?hal=getuser&amp;getId=1072&amp;getMpid=1128"
-                                >luca</a
-                              >
-                            </div>
-                            <div class="float-right media-title">
-                              <span
-                                class="badge badge-light"
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="Inactive"
-                                ><i class="fa fa-fw fa-question"></i
-                              ></span>
-                            </div>
-                            <span class="text-small text-muted">
-                              <div>luca luca</div>
-                              <div
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="fabriz*******@gmail.com"
-                              >
-                                fabriz*******@...
-                              </div>
-                            </span>
-                          </div>
-                        </li>
-                        <li class="media">
-                          <img
-                            class="mr-3 rounded-circle"
-                            width="48"
-                            src="../assets/image/mbr_defaultimage.jpg"
-                            alt="avatar"
-                          />
-                          <div class="media-body">
-                            <div class="float-right text-small text-success">
-                              18 hours ago
-                            </div>
-                            <div class="media-title">
-                              <a
-                                href="index.php?hal=getuser&amp;getId=1071&amp;getMpid=1127"
-                                >adminrrew</a
-                              >
-                            </div>
-                            <div class="float-right media-title">
-                              <span
-                                class="badge badge-light"
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="Inactive"
-                                ><i class="fa fa-fw fa-question"></i
-                              ></span>
-                            </div>
-                            <span class="text-small text-muted">
-                              <div>njj ew4t44</div>
-                              <div
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="nh***@gmail.com"
-                              >
-                                nh***@gmail.com
-                              </div>
-                            </span>
-                          </div>
-                        </li>
-                        <li class="media">
-                          <img
-                            class="mr-3 rounded-circle"
-                            width="48"
-                            src="../assets/image/mbr_defaultimage.jpg"
-                            alt="avatar"
-                          />
-                          <div class="media-body">
-                            <div class="float-right text-small text-success">
-                              21 hours ago
-                            </div>
-                            <div class="media-title">
-                              <a
-                                href="index.php?hal=getuser&amp;getId=1070&amp;getMpid=1126"
-                                >mohsinraza</a
-                              >
-                            </div>
-                            <div class="float-right media-title">
-                              <span
-                                class="badge badge-light"
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="Inactive"
-                                ><i class="fa fa-fw fa-question"></i
-                              ></span>
-                            </div>
-                            <span class="text-small text-muted">
-                              <div>Mohsin Raza</div>
-                              <div
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="mohsinr********@gmail.com"
-                              >
-                                mohsinr*******...
-                              </div>
-                            </span>
-                          </div>
-                        </li>
-                        <li class="media">
-                          <img
-                            class="mr-3 rounded-circle"
-                            width="48"
-                            src="../assets/image/mbr_defaultimage.jpg"
-                            alt="avatar"
-                          />
-                          <div class="media-body">
-                            <div class="float-right text-small text-success">
-                              22 hours ago
-                            </div>
-                            <div class="media-title">
-                              <a
-                                href="index.php?hal=getuser&amp;getId=1069&amp;getMpid=1125"
-                                >soeharto</a
-                              >
-                            </div>
-                            <div class="float-right media-title">
-                              <span
-                                class="badge badge-light"
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="Inactive"
-                                ><i class="fa fa-fw fa-question"></i
-                              ></span>
-                            </div>
-                            <span class="text-small text-muted">
-                              <div>soe harto</div>
-                              <div
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="soeh*****@gmail.com"
-                              >
-                                soeh*****@gmai...
-                              </div>
-                            </span>
-                          </div>
-                        </li>
-                        <li class="media">
-                          <img
-                            class="mr-3 rounded-circle"
-                            width="48"
-                            src="../assets/image/mbr_defaultimage.jpg"
-                            alt="avatar"
-                          />
-                          <div class="media-body">
-                            <div class="float-right text-small text-success">
-                              1 day ago
-                            </div>
-                            <div class="media-title">
-                              <a
-                                href="index.php?hal=getuser&amp;getId=1068&amp;getMpid=1124"
-                                >eazazda</a
-                              >
-                            </div>
-                            <div class="float-right media-title">
-                              <span
-                                class="badge badge-success"
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="Active"
-                                ><i class="fa fa-fw fa-check"></i
-                              ></span>
-                            </div>
-                            <span class="text-small text-muted">
-                              <div>ee ee</div>
-                              <div
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="7ql1*****@mozmail.com"
-                              >
-                                7ql1*****@mozm...
-                              </div>
-                            </span>
-                          </div>
-                        </li>
-                        <li class="media">
-                          <img
-                            class="mr-3 rounded-circle"
-                            width="48"
-                            src="../assets/image/mbr_defaultimage.jpg"
-                            alt="avatar"
-                          />
-                          <div class="media-body">
-                            <div class="float-right text-small text-success">
-                              5 days ago
-                            </div>
-                            <div class="media-title">
-                              <a
-                                href="index.php?hal=getuser&amp;getId=1066&amp;getMpid=1122"
-                                >254705688044</a
-                              >
-                            </div>
-                            <div class="float-right media-title">
-                              <span
-                                class="badge badge-success"
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="Active"
-                                ><i class="fa fa-fw fa-check"></i
-                              ></span>
-                            </div>
-                            <span class="text-small text-muted">
-                              <div>Tarek A13151175</div>
-                              <div
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="empl*****@example.com"
-                              >
-                                empl*****@exam...
-                              </div>
-                            </span>
-                          </div>
-                        </li>
-                        <li class="media">
-                          <img
-                            class="mr-3 rounded-circle"
-                            width="48"
-                            src="../assets/image/mbr_defaultimage.jpg"
-                            alt="avatar"
-                          />
-                          <div class="media-body">
-                            <div class="float-right text-small text-success">
-                              1 week ago
-                            </div>
-                            <div class="media-title">
-                              <a
-                                href="index.php?hal=getuser&amp;getId=1065&amp;getMpid=1121"
-                                >johnjack</a
-                              >
-                            </div>
-                            <div class="float-right media-title">
-                              <span
-                                class="badge badge-light"
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="Inactive"
-                                ><i class="fa fa-fw fa-question"></i
-                              ></span>
-                            </div>
-                            <span class="text-small text-muted">
-                              <div>john jack</div>
-                              <div
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="thru*****@dotvu.net"
-                              >
-                                thru*****@dotv...
-                              </div>
-                            </span>
-                          </div>
-                        </li>
-                        <li class="media">
-                          <img
-                            class="mr-3 rounded-circle"
-                            width="48"
-                            src="../assets/image/mbr_defaultimage.jpg"
-                            alt="avatar"
-                          />
-                          <div class="media-body">
-                            <div class="float-right text-small text-success">
-                              1 week ago
-                            </div>
-                            <div class="media-title">
-                              <a
-                                href="index.php?hal=getuser&amp;getId=1063&amp;getMpid=1119"
-                                >emichael24</a
-                              >
-                            </div>
-                            <div class="float-right media-title">
-                              <span
-                                class="badge badge-success"
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="Active"
-                                ><i class="fa fa-fw fa-check"></i
-                              ></span>
-                            </div>
-                            <span class="text-small text-muted">
-                              <div>Michael Emmanuel</div>
-                              <div
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="emich******@gmail.com"
-                              >
-                                emich******@gm...
-                              </div>
-                            </span>
-                          </div>
-                        </li>
-                        <li class="media">
-                          <img
-                            class="mr-3 rounded-circle"
-                            width="48"
-                            src="../assets/image/mbr_defaultimage.jpg"
-                            alt="avatar"
-                          />
-                          <div class="media-body">
-                            <div class="float-right text-small text-success">
-                              1 week ago
-                            </div>
-                            <div class="media-title">
-                              <a
-                                href="index.php?hal=getuser&amp;getId=1062&amp;getMpid=1118"
-                                >demo11111</a
-                              >
-                            </div>
-                            <div class="float-right media-title">
-                              <span
-                                class="badge badge-success"
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="Active"
-                                ><i class="fa fa-fw fa-check"></i
-                              ></span>
-                            </div>
-                            <span class="text-small text-muted">
-                              <div>demo11111 demo11111</div>
-                              <div
-                                data-toggle="tooltip"
-                                title=""
-                                data-original-title="demo*****@dd.com"
-                              >
-                                demo*****@dd.com
-                              </div>
-                            </span>
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                {% else %}
+                    <p>You have not achieved any rank yet. Work on your referrals to progress!</p>
+                {% endif %}
+                <p><a href="{% url 'view_rewards' %}">View Rewards and Rank Details</a></p>
             </div>
 
-            <!-- Template JS File -->
-            <script src="../assets/js/chart.min.js"></script>
 
-            <!-- Page Specific JS File -->
-            <script src="../assets/js/acpchart.js"></script>
-          </section>
+            <!-- Training Progress -->
+            <div id="training">
+                <h2>Training Progress</h2>
+                {% if training_modules %}
+                    <ul>
+                        {% for module in training_modules %}
+                            <li>
+                                {{ module.title }}
+                                {% if module.completed %}
+                                    - <span style="color: green;">Completed</span>
+                                {% else %}
+                                    - <a href="{% url 'complete_training_module' module.id %}">Complete Now</a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No training modules available at the moment.</p>
+                {% endif %}
+            </div>
+
+            <!-- Downline -->
+            <div id="downline">
+                <h2>Your Downline</h2>
+                {% if referrals %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Join Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for referral in referrals %}
+                                <tr>
+                                    <td>{{ referral.user.full_name }}</td>
+                                    <td>{{ referral.user.email }}</td>
+                                    <td>{{ referral.created_at|date:"Y-m-d" }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>You have not referred any users yet. Share your referral link to grow your network!</p>
+                {% endif %}
+            </div>
+
+            <!-- Payment History -->
+            <div id="payment-history">
+                <h2>Your Payment History</h2>
+                <p><a href="{% url 'payment_history' %}">View payment history</a> to check your payouts.</p>
+            </div>
+
+            <!-- Rewards -->
+            <div id="rewards">
+                <h2>Your Rewards</h2>
+                <p><a href="{% url 'view_rewards' %}">View your rewards</a> to see the bonuses and ranks you have achieved.</p>
+            </div>
         </div>
-
-        <!-- Modal -->
-        <div
-          class="modal fade"
-          id="myModal"
-          role="dialog"
-          aria-labelledby="..."
-        >
-          <div
-            class="modal-dialog modal-lg modal-dialog-centered"
-            role="document"
-          >
-            <!-- Modal content-->
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">New message</h5>
-                <button type="button" class="close" data-dismiss="modal">
-                  <span aria-hidden="true">×</span>
-                </button>
-              </div>
-              <div class="modal-body"></div>
-            </div>
-          </div>
-        </div>
-
-        <footer class="main-footer">
-          <div class="footer-left">
-            <span class="d-none d-sm-inline"
-              >Crafted with <i class="fa fa-fw fa-heart"></i> 2024
-              <div class="bullet"></div>
-              <a href="https://www.mlmscript.net/demo/unimatrix"
-                >Demo UniMatrix</a
-              ></span
-            ><span></span>
-          </div>
-          <div class="footer-right text-sm-left"></div>
-        </footer>
-      </div>
     </div>
 
-    <!-- Demo Color Changer -->
-    <div id="layout-skins-changer">
-      <div
-        class="skin-btn bg-primary"
-        data-toggle="tooltip"
-        data-placement="left"
-        data-original-title="Demo Layout Color"
-      >
-        <i class="fas fa-paint-brush"></i>
-      </div>
-      <a
-        href="index.php?swcolordo=1&amp;swcolorto=default&amp;swcolorhash=8d584ef62c3342331dfd27767aad5cd3"
-        class="skin-btn"
-        style="background-color: #007bff !important"
-        data-toggle="tooltip"
-        data-placement="left"
-        data-original-title="Default"
-        data-value="default"
-      >
-        <i class="ml-0"></i>
-      </a>
-      <a
-        href="index.php?swcolordo=1&amp;swcolorto=p1&amp;swcolorhash=ed881afcdbefba03330329bbe1598337"
-        class="skin-btn"
-        style="background-color: #f183a8 !important"
-        data-toggle="tooltip"
-        data-placement="left"
-        data-original-title="RGB#F183A8"
-        data-value="rgb#f183a8"
-      >
-        <i class="ml-0"></i>
-      </a>
-      <a
-        href="index.php?swcolordo=1&amp;swcolorto=b1&amp;swcolorhash=1071fdaac38dc014ebc108a69d93b1a7"
-        class="skin-btn"
-        style="background-color: #237289 !important"
-        data-toggle="tooltip"
-        data-placement="left"
-        data-original-title="RGB#237289"
-        data-value="rgb#237289"
-      >
-        <i class="ml-0"></i>
-      </a>
-      <a
-        href="index.php?swcolordo=1&amp;swcolorto=o1&amp;swcolorhash=1cb224667d414d717ec416635e8408d7"
-        class="skin-btn"
-        style="background-color: #fc6c35 !important"
-        data-toggle="tooltip"
-        data-placement="left"
-        data-original-title="RGB#FC6C35"
-        data-value="rgb#fc6c35"
-      >
-        <i class="fas fa-check ml-0"></i>
-      </a>
-      <a
-        href="index.php?swcolordo=1&amp;swcolorto=green1&amp;swcolorhash=f9e5ffa5549b38de825547d21736bd66"
-        class="skin-btn"
-        style="background-color: #167135 !important"
-        data-toggle="tooltip"
-        data-placement="left"
-        data-original-title="RGB#167135"
-        data-value="rgb#167135"
-      >
-        <i class="ml-0"></i>
-      </a>
-      <a
-        href="index.php?swcolordo=1&amp;swcolorto=viole1&amp;swcolorhash=22cfa859938e62108ef27090f5a6d693"
-        class="skin-btn"
-        style="background-color: #9c3993 !important"
-        data-toggle="tooltip"
-        data-placement="left"
-        data-original-title="RGB#9c3993"
-        data-value="rgb#9c3993"
-      >
-        <i class="ml-0"></i>
-      </a>
-      <a
-        href="#"
-        class="skin-btn bg-info"
-        data-toggle="tooltip"
-        data-placement="left"
-        data-original-title="More color are available!"
-        data-value="more color are available"
-      >
-        <i class="fas fa-question ml-0"></i>
-      </a>
-    </div>
-
-    <!-- Template JS File -->
-    <script src="../assets/js/scripts.js"></script>
-    <script src="../assets/js/custom.js"></script>
-
-    <script src="../assets/js/notifytoast.js"></script>
-
-    <!-- Page Specific JS File -->
-    <script type="text/javascript">
-      toastr.options = {
-        closeButton: true,
-        progressBar: true,
-        preventDuplicates: true,
-        onclick: null,
-      };
-    </script>
-
-    <div
-      id="ascrail2000"
-      class="nicescroll-rails nicescroll-rails-vr"
-      style="
-        width: 8px;
-        z-index: 892;
-        cursor: default;
-        position: fixed;
-        top: 0px;
-        left: -8px;
-        height: 600px;
-        display: block;
-        opacity: 0;
-      "
-    >
-      <div
-        class="nicescroll-cursors"
-        style="
-          position: relative;
-          top: 0px;
-          float: right;
-          width: 6px;
-          height: 258px;
-          background-color: rgb(66, 66, 66);
-          border: 1px solid rgb(255, 255, 255);
-          background-clip: padding-box;
-          border-radius: 5px;
-        "
-      ></div>
-    </div>
-    <div
-      id="ascrail2000-hr"
-      class="nicescroll-rails nicescroll-rails-hr"
-      style="
-        height: 8px;
-        z-index: 892;
-        top: 592px;
-        left: -250px;
-        position: fixed;
-        cursor: default;
-        display: none;
-        width: 242px;
-        opacity: 0;
-      "
-    >
-      <div
-        class="nicescroll-cursors"
-        style="
-          position: absolute;
-          top: 0px;
-          height: 6px;
-          width: 250px;
-          background-color: rgb(66, 66, 66);
-          border: 1px solid rgb(255, 255, 255);
-          background-clip: padding-box;
-          border-radius: 5px;
-          left: 0px;
-        "
-      ></div>
-    </div>
-    <div
-      style="position: relative"
-      id="zp-8-4-9-apollo-root-apollo_everywhere"
-    ></div>
-  </body>
+    <footer>
+        <p>&copy; {{ year }} Affiliate Management System. All rights reserved.</p>
+    </footer>
+</body>
 </html>
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="section-header">
+  <h1><i class="fa fa-fw fa-chart-line"></i> Dashboard</h1>
+</div>
+
+<div class="section-body">
+  <div class="row">
+    <!-- Hits Section -->
+    <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+      <div class="card card-statistic-1">
+        <div class="card-icon bg-info">
+          <i class="far fa-hand-point-up"></i>
+        </div>
+        <div class="card-wrap">
+          <div class="card-header">
+            <h4>Total Referrals</h4>
+          </div>
+          <div class="card-body">
+            {{ referrals.count }}
+            <div class="text-small text-muted">Active Referrals: {{ referrals|length }}</div>
+          </div>
+          <div class="card-footer text-small text-small mt-2 border-top">
+            <i class="fas fa-calendar-alt"></i> Year: {{ year }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Earnings Section -->
+    <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+      <div class="card card-statistic-1">
+        <div class="card-icon bg-warning">
+          <i class="far fa-money-bill-alt"></i>
+        </div>
+        <div class="card-wrap">
+          <div class="card-header">
+            <h4>Total Earnings</h4>
+          </div>
+          <div class="card-body">
+            ₹{{ total_earnings|floatformat:2 }}
+            <div class="text-small text-muted">Product Earnings: ₹{{ product_commissions|floatformat:2 }}</div>
+            <div class="text-small text-muted">Referral Earnings: ₹{{ referral_commissions|floatformat:2 }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rank Section -->
+    <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+      <div class="card card-statistic-1">
+        <div class="card-icon bg-success">
+          <i class="fas fa-medal"></i>
+        </div>
+        <div class="card-wrap">
+          <div class="card-header">
+            <h4>Current Rank</h4>
+          </div>
+          <div class="card-body">
+            {{ rank }}
+            <div class="text-small text-muted">Rank Reward: ₹{{ rank_reward|floatformat:2 }}</div>
+            {% if next_rank %}
+              <div class="text-small text-muted">Next Rank: {{ next_rank }}</div>
+              <div class="text-small text-muted">Required Referrals: {{ next_rank_min_personal_referrals }}</div>
+            {% else %}
+              <div class="text-small text-muted">No further ranks available.</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Account Overview -->
+  <div class="row">
+    <div class="col-lg-8 col-md-12 col-12 col-sm-12">
+      <div class="card">
+        <div class="card-header">
+          <h4>Account Overview</h4>
+          <div class="card-header-action">
+            <div class="badge badge-success">Active</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <ul class="list-unstyled list-unstyled-border">
+            <li class="media">
+              <div class="media-body">
+                <div class="text-small">Name</div>
+                <div class="media-title">{{ display_name }}</div>
+              </div>
+            </li>
+            <li class="media">
+              <div class="media-body">
+                <div class="text-small">Total Products Sold</div>
+                <div class="media-title">{{ total_products_sold }}</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Referrals -->
+    <div class="col-lg-4 col-md-12 col-12 col-sm-12">
+      <div class="card">
+        <div class="card-header">
+          <h4>Recent Referrals</h4>
+        </div>
+        <div class="card-body">
+          <ul class="list-unstyled list-unstyled-border">
+            {% for referral in referrals %}
+              <li class="media">
+                <div class="media-body">
+                  <div class="media-title">{{ referral.user.full_name or referral.user.username }}</div>
+                  <span class="text-small text-muted">{{ referral.user.email }}</span>
+                </div>
+              </li>
+            {% empty %}
+              <p>No referrals yet.</p>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

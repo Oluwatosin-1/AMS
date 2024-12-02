@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings 
-from django.db.models import Sum 
+from django.db.models import Sum
+
+from referrals.models import Referral 
 from .managers import AffiliateManager  # Custom manager for Affiliates
 
 class BaseModel(models.Model):
@@ -29,10 +31,9 @@ class Affiliate(BaseModel):
         self.save()
 
     def calculate_total_earnings(self):
-        """Calculate total earnings including commissions and bonuses."""
-        from referrals.models import Referral  # Avoid circular imports
+        """Calculate total earnings including product commissions, referrals, and rank rewards."""
         product_commissions = self.productpurchase_set.aggregate(
-            total=Sum('amount')
+            total=Sum('commission_earned')
         )['total'] or 0
 
         referral_commissions = Referral.objects.filter(affiliate=self).aggregate(
@@ -43,5 +44,21 @@ class Affiliate(BaseModel):
 
         return product_commissions + referral_commissions + rank_rewards
 
+
     def __str__(self):
-        return self.user.username
+        return self.user.username 
+
+class AffiliateEarning(models.Model):
+    EARNING_TYPES = [
+        ('product', 'Product Commission'),
+        ('referral', 'Referral Commission'),
+        ('rank', 'Rank Reward'),
+    ]
+    affiliate = models.ForeignKey(Affiliate, on_delete=models.CASCADE, related_name='earnings')
+    earning_type = models.CharField(max_length=20, choices=EARNING_TYPES)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.affiliate.user.username} - {self.earning_type} - ${self.amount}"

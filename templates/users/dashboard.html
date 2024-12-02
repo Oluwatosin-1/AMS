@@ -1,158 +1,325 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Affiliate Dashboard</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-</head>
-<body>
-    <div id="wrapper">
-        <!-- Sidebar -->
-        <div id="sidebar">
-            <h2>Affiliate Menu</h2>
-            <ul>
-                <li><a href="{% url 'affiliate_dashboard' %}">Dashboard</a></li>
-                <li><a href="{% url 'update_profile' %}">Update Profile</a></li>
-                <li><a href="{% url 'affiliate_links' %}">Affiliate Links</a></li>
-                <li><a href="{% url 'generate_referral_link' %}">Generate Referral Link</a></li>
-                <li><a href="{% url 'affiliate_earnings' %}">Earnings</a></li>
-                <li><a href="{% url 'payment_history' %}">Payment History</a></li>
-                <li><a href="{% url 'affiliate_training' %}">Training</a></li>
-                <li><a href="{% url 'view_downline' %}">Downline</a></li>
-                <li><a href="{% url 'view_rewards' %}">Rewards</a></li> <!-- Rewards Section -->
-                <li><a href="{% url 'logout' %}">Logout</a></li>
-            </ul>
+{% block content %}
+<div class="section-header">
+  <h1><i class="fa fa-fw fa-chart-line"></i> Dashboard</h1>
+</div>
+
+<div class="section-body">
+  <div class="row">
+    <!-- Link Hits -->
+    <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+      <div class="card card-statistic-1">
+        <div class="card-icon bg-info">
+          <i class="far fa-hand-point-up"></i>
         </div>
-
-        <!-- Main Content -->
-        <div id="content">
-            <h1>Welcome, {{ display_name }}</h1>
-            <p>This is your affiliate dashboard. Below you can find an overview of your activities and access various sections to manage your account.</p>
-
-            <!-- Dashboard Overview -->
-            <div id="overview">
-                <h2>Dashboard Overview</h2>
-                <ul>
-                    <li><strong>Total Earnings:</strong> ${{ total_earnings }}</li>
-                    <li><strong>Number of Referrals:</strong> {{ referrals.count }}</li>
-                    <li><strong>Total Products Sold:</strong> {{ total_products_sold }}</li>
-                    <li><strong>Total Link Clicks:</strong> {{ link_clicks }}</li>
-                </ul>
-            </div>
-
-            <!-- Affiliate Links -->
-            <div id="links">
-                <h2>Your Affiliate Links</h2>
-                {% if links %}
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Affiliate Link</th>
-                                <th>Clicks</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for link in links %}
-                                <tr>
-                                    <td>{{ link.product.name }}</td>
-                                    <td><a href="{{ link.unique_url }}" target="_blank">{{ link.unique_url }}</a></td>
-                                    <td>{{ link.clicks }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                {% else %}
-                    <p>You have not generated any affiliate links yet. <a href="{% url 'affiliate_links' %}">Create links now</a>.</p>
-                {% endif %}
-            </div>
-
-            <!-- Referral Link -->
-            <div id="referral-link">
-                <h2>Your Referral Link</h2>
-                <p><a href="{% url 'generate_referral_link' %}">Generate your referral link here</a> and share it to grow your network.</p>
-            </div>
-            <!-- Rank Information -->
-            <div id="rank">
-                <h2>Your Current Rank</h2>
-                {% if rank %}
-                    <div>
-                        <img src="{{ rank_logo }}" alt="{{ rank }}" style="width: 50px; height: 50px;">
-                        <p><strong>Rank:</strong> {{ rank }}</p>
-                        <p><strong>Reward:</strong> ${{ rank_reward }}</p>
-                    </div>
-                {% else %}
-                    <p>You have not achieved any rank yet. Work on your referrals to progress!</p>
-                {% endif %}
-                <p><a href="{% url 'view_rewards' %}">View Rewards and Rank Details</a></p>
-            </div>
-
-            <!-- Training Progress -->
-            <div id="training">
-                <h2>Training Progress</h2>
-                {% if training_modules %}
-                    <ul>
-                        {% for module in training_modules %}
-                            <li>
-                                {{ module.title }}
-                                {% if module.completed %}
-                                    - <span style="color: green;">Completed</span>
-                                {% else %}
-                                    - <a href="{% url 'complete_training_module' module.id %}">Complete Now</a>
-                                {% endif %}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>No training modules available at the moment.</p>
-                {% endif %}
-            </div>
-
-            <!-- Downline -->
-            <div id="downline">
-                <h2>Your Downline</h2>
-                {% if referrals %}
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Join Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for referral in referrals %}
-                                <tr>
-                                    <td>{{ referral.user.full_name }}</td>
-                                    <td>{{ referral.user.email }}</td>
-                                    <td>{{ referral.created_at|date:"Y-m-d" }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                {% else %}
-                    <p>You have not referred any users yet. Share your referral link to grow your network!</p>
-                {% endif %}
-            </div>
-
-            <!-- Payment History -->
-            <div id="payment-history">
-                <h2>Your Payment History</h2>
-                <p><a href="{% url 'payment_history' %}">View payment history</a> to check your payouts.</p>
-            </div>
-
-            <!-- Rewards -->
-            <div id="rewards">
-                <h2>Your Rewards</h2>
-                <p><a href="{% url 'view_rewards' %}">View your rewards</a> to see the bonuses and ranks you have achieved.</p>
-            </div>
+        <div class="card-wrap">
+          <div class="card-header">
+            <h4>Link Hits</h4>
+          </div>
+          <div class="card-body">
+            {{ total_link_clicks }}
+            <div class="text-small text-muted">Conversion: {{ conversion_rate }}%</div>
+          </div>
+          <div class="card-footer text-small text-small mt-2 border-top">
+            <i class="fas fa-calendar-alt"></i> Last visit:
+            <strong>{{ last_visit }}</strong>
+            <span class="float-right"><i class="fas fa-frown"></i></span>
+          </div>
         </div>
+      </div>
     </div>
 
-    <footer>
-        <p>&copy; {{ year }} Affiliate Management System. All rights reserved.</p>
-    </footer>
-</body>
-</html>
+    <!-- Personal Referrals -->
+    <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+      <div class="card card-statistic-1">
+        <a href="{% url 'view_downline' %}">
+          <div class="card-icon bg-info">
+            <i class="far fa-handshake"></i>
+          </div>
+        </a>
+        <div class="card-wrap">
+          <div class="card-header">
+            <h4>Personal Referrals</h4>
+          </div>
+          <div class="card-body">
+            {{ personal_referrals }}
+            <div class="text-small text-muted">Total referral: {{ total_referrals }}</div>
+          </div>
+          <div class="card-footer text-small mt-2 border-top">
+            <i class="fas fa-user-check text-success"></i> Active:
+            <strong>{{ active_referrals }}</strong>
+            <span class="float-right">
+              {% for i in "12345" %}
+              <i class="fas fa-star text-warning"></i>
+              {% endfor %}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Earnings -->
+    <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+      <div class="card card-statistic-1">
+        <a href="{% url 'affiliate_earnings' %}">
+          <div class="card-icon bg-warning">
+            <i class="far fa-money-bill-alt"></i>
+          </div>
+        </a>
+        <div class="card-wrap">
+          <div class="card-header">
+            <h4>Earning</h4>
+          </div>
+          <div class="card-body">${{ total_earnings }}
+            <div class="text-small text-muted">Total income: </div>
+          </div>
+          <div class="card-footer text-small text-small mt-2 border-top">
+            <a href="{% url 'withdraw_request' %}">
+              <i class="fas fa-wallet fa-fw"></i>
+            </a>
+            Wallet: <strong> ${{ wallet_balance }}</strong>
+            <span class="float-right">
+              <i class="fas fa-smile text-secondary"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Account Overview -->
+    <div class="col-lg-8 col-md-12 col-12 col-sm-12">
+      <div class="card">
+        <div class="card-header">
+          <h4>Account Overview</h4>
+          <div class="card-header-action">
+            <div class="badge badge-success">Active</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="summary-item">
+            <ul class="list-unstyled list-unstyled-border">
+              <li class="media">
+                <div class="media-body">
+                  <div class="text-small">Registered</div>
+                  <div class="media-title">{{ registration_date }}</div>
+                </div>
+              </li>
+              <li class="media">
+                <div class="media-body">
+                  <div class="text-small">Name</div>
+                  <div class="media-title">
+                    {{ user_name }} ({{ user_email }})
+                  </div>
+                </div>
+              </li>
+              <li class="media">
+                <div class="media-body">
+                  <div class="text-small">Default Referral URL</div>
+                  <div class="media-title">
+                    <a href="{{ referral_link }}" target="_blank">{{ referral_link }}</a>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Performance -->
+      <div class="card">
+        <div class="card-header">
+          <h4>Performance</h4>
+        </div>
+        <div class="card-body">
+          <canvas id="performanceChart" width="400" height="200"></canvas>
+        </div>
+      </div>
+      <!-- Ranking Section -->
+    <div class="card">
+      <div class="card-header">
+        <h4>Ranking</h4>
+        <div class="card-header-action">
+          <div class="badge badge-success">Active</div>
+        </div>
+      </div>
+
+      {% if rank %}
+        <div class="card-body">
+          <div class="summary">
+            <div class="summary-info">
+              {% if next_rank %}
+                <h4>
+                  <span class="text-success"><i class="fas fa-caret-up"></i></span>
+                  Total Referrals: {{ rank.total_referral }}
+                </h4>
+                <div class="text-muted">Personal Referrals: {{ next_rank.min_personal_referrals }}</div>
+                <h3 class="mt-2">
+                  <span class="text-info"><i class="fas fa-wallet fa-fw"></i></span>
+                  Next Rank Requirements:
+                </h3>
+                <div class="d-block mt-2">
+                  <a href="{% url 'view_rewards' %}">View Details</a>
+                </div>
+              {% else %}
+                <p>Congratulations! You have achieved the highest rank.</p>
+              {% endif %}
+            </div>
+
+            <div class="summary-item">
+              <h6><span class="text-muted">Attained Since</span> 5 Jul 2023</h6>
+              <ul class="list-unstyled list-unstyled-border">
+                <li class="media">
+                  <div>
+                    <img class="mr-3 rounded" width="50" src="{{ rank_logo }}" alt="{{ rank }}" />
+                  </div>
+                  <div class="media-body">{{ rank }}</div>
+                  <div class="text-muted text-small">Reward: ${{ rank_reward }}</div>
+                  <h6 class="mt-3">
+                    <div class="media-right text-right">
+                      <div class="badge badge-success">Active</div>
+                    </div>
+                    <span class="text-muted">Registration</span> 1 Mar 2022
+                  </h6>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <p>You have not achieved any rank yet. Work on your referrals to progress!</p>
+      {% endif %}
+    </div>
+
+    </div>
+
+    <!-- Sponsor -->
+    <div class="col-lg-4 col-md-12 col-12 col-sm-12">
+      <div class="card">
+        <div class="card-header">
+          <h4>My Sponsor</h4>
+          <div class="card-header-action">
+            <span class="badge badge-success">Active</span
+            ><span
+              class="badge badge-success"
+              data-toggle="tooltip"
+              title=""
+              data-original-title="Plan E - Active"
+              ><i class="fa fa-fw fa-check"></i
+            ></span>
+          </div>
+        </div>
+        <div class="card-body">
+          <ul class="list-unstyled list-unstyled-border">
+            <li class="media">
+              <img
+                class="mr-3 rounded-circle"
+                width="48"
+                src="{% static 'assets/image/mbr_image_1.jpg' %}"
+                alt="avatar"
+              />
+              <div class="media-body">
+                <div class="float-right text-small text-success"></div>
+                <div class="media-title">{{ sponsor_name }}</div>
+                <span class="text-small text-muted">
+                  <div>{{ sponsor_full_name }}</div>
+                  <div
+                    data-toggle="tooltip"
+                    title=""
+                    data-original-title="{{ sponsor_email }}"
+                  >
+                    <i class="fa fa-fw fa-envelope"></i> {{ sponsor_email }}
+                  </div>
+                  <div><i class="fa fa-fw fa-mobile-alt"></i> {{ sponsor_phone }}</div>
+                  <div>{{ sponsor_location }}</div>
+                </span>
+              </div>
+            </li>
+          </ul>
+          <div>
+            <blockquote class="text-small">
+              I like to receive and deal with challenging tasks. I am a very
+              enthusiastic person and I think this is a strong point of mine. My
+              friends say that I am a very funny with a good sense of humor. As
+              soon as I meet new people who are happy to meet me, I feel
+              extremely comfortable with them.
+            </blockquote>
+          </div>
+        </div>
+      </div> 
+      <!-- Recent Referrals -->
+      <div class="card">
+        <div class="card-header">
+          <h4>Recent Referrals</h4>
+          <div class="card-header-action">
+            <a href="{% url 'view_downline' %}" class="btn btn-primary">View All</a>
+          </div>
+        </div>
+        <div class="card-body">
+          <ul class="list-unstyled list-unstyled-border">
+            {% if recent_referrals %}
+            {% for referral in recent_referrals %}
+            <li class="media">
+              <img src="{% static 'assets/image/mbr_defaultimage.jpg' %}" alt="avatar" class="mr-3 rounded-circle" width="48">
+              <div class="media-body">
+                <div class="float-right text-small text-success">{{ referral.join_date }}</div>
+                <div class="media-title">{{ referral.user.full_name }}</div>
+                <span class="text-small text-muted">
+                  <div>{{ referral.user.email }}</div>
+                </span>
+              </div>
+            </li>
+            {% endfor %}
+            {% else %}
+                    <p>You have not referred any users yet. Share your referral link to grow your network!</p>
+                {% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var ctx = document.getElementById('performanceChart').getContext('2d');
+  var performanceChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: {{ performance_chart_labels|safe }},
+      datasets: [
+        {
+          label: 'Referrals',
+          data: {{ performance_chart_referrals|safe }},
+          borderColor: '#36a2eb',
+          fill: false
+        },
+        {
+          label: 'Products',
+          data: {{ performance_chart_products|safe }},
+          borderColor: '#ff6384',
+          fill: false
+        },
+        {
+          label: 'Clicks',
+          data: {{ performance_chart_clicks|safe }},
+          borderColor: '#4bc0c0',
+          fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      title: {
+        display: true,
+        text: 'Performance Overview'
+      },
+      scales: {
+        xAxes: [{ display: true, scaleLabel: { display: true, labelString: 'Time' } }],
+        yAxes: [{ display: true, scaleLabel: { display: true, labelString: 'Count' } }]
+      }
+    }
+  });
+</script>
+{% endblock %}
