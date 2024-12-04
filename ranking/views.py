@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
-
-from ranking.utils import update_affiliate_rank 
+from django.db.models import Sum
+from products.models import ProductPurchase
+from ranking.utils import update_affiliate_rank
+from referrals.models import Referral 
 from .models import Rank, AffiliateRank 
 
 @login_required
@@ -27,9 +29,34 @@ def affiliate_rank(request):
 
     return render(request, 'ranking/affiliate_rank.html', {'rank': affiliate_rank})
 
-login_required
+@login_required
 def view_rewards(request):
-    """View to display affiliate rewards."""
+    """View to display affiliate rewards and additional details."""
     affiliate = request.user.affiliate
+
+    # Fetch rewards and related data
     rewards = AffiliateRank.objects.filter(affiliate=affiliate).select_related('current_rank')
-    return render(request, 'affiliates/rewards.html', {'rewards': rewards})
+
+    # Calculate total earnings breakdown
+    product_commissions = ProductPurchase.objects.filter(affiliate=affiliate).aggregate(
+        total=Sum('commission_earned')
+    )['total'] or 0
+
+    referral_commissions = Referral.objects.filter(affiliate=affiliate).aggregate(
+        total=Sum('commission_earned')
+    )['total'] or 0
+
+    rank_rewards = sum(reward.current_rank.reward for reward in rewards if reward.current_rank)
+    total_earnings = product_commissions + referral_commissions + rank_rewards
+
+    return render(
+        request,
+        'affiliates/rewards.html',
+        {
+            'rewards': rewards,
+            'product_commissions': product_commissions,
+            'referral_commissions': referral_commissions,
+            'rank_rewards': rank_rewards,
+            'total_earnings': total_earnings,
+        },
+    )

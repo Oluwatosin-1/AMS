@@ -2,20 +2,34 @@
 {% load static %}
 
 {% block content %}
-<h2>Start Training: {{ module.title }}</h2>
-
-<div>
-    <p><strong>Description:</strong> {{ module.content }}</p>
-    <p><strong>Estimated Completion Time:</strong> {{ module.completion_time }} minutes</p>
-    {% if module.file %}
-        <p><strong>Download Material:</strong> 
-            <a href="{{ module.file.url }}" download>{{ module.file.name }}</a>
-        </p>
-    {% endif %}
+<div class="section-header">
+    <h1><i class="fa fa-play-circle"></i> Start Training: {{ module.title }}</h1>
 </div>
 
-<form method="POST" action="{% url 'complete_training_module' module.id %}">
-    {% csrf_token %}
-    <button type="submit">Mark as Completed</button>
-</form>
+<div class="section-body">
+    <div class="card">
+        <div class="card-header">
+            <h4>Module Details</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Description:</strong> {{ module.content }}</p>
+            <p><strong>Estimated Completion Time:</strong> {{ module.completion_time }} minutes</p>
+            {% if module.material %}
+                <p><strong>Download Material:</strong> 
+                    <a href="{{ module.material.url }}" class="btn btn-info" download>
+                        <i class="fa fa-download"></i> Download
+                    </a>
+                </p>
+            {% endif %}
+        </div>
+        <div class="card-footer">
+            <form method="POST" action="{% url 'complete_training_module' module.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success">
+                    <i class="fa fa-check-circle"></i> Mark as Completed
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

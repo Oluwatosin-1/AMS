@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        .invoice-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .invoice-details {
+            margin: 20px;
+        }
+        .invoice-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.8em;
+            color: #555;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-header">
+        <h1>Invoice</h1>
+        <p>Thank you for your purchase!</p>
+    </div>
+    <div class="invoice-details">
+        <p><strong>Client Email:</strong> {{ client_email }}</p>
+        <p><strong>Product Name:</strong> {{ product.name }}</p>
+        <p><strong>Price:</strong> ${{ product.price }}</p>
+        <p><strong>Purchase Date:</strong> {{ purchase.purchased_at|date:"Y-m-d H:i" }}</p>
+        <p><strong>Transaction Reference:</strong> {{ purchase.paystack_reference }}</p>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Product</td>
+                <td>{{ product.name }}</td>
+            </tr>
+            <tr>
+                <td>Price</td>
+                <td>${{ product.price }}</td>
+            </tr>
+            <tr>
+                <td>Transaction Reference</td>
+                <td>{{ purchase.paystack_reference }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="invoice-footer">
+        <p>© 2024 Skillsquared Affiliate Management System</p>
+    </div>
+</body>
+</html>

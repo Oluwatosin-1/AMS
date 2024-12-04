@@ -3,7 +3,7 @@ from django.conf import settings
 
 
 class TrainingModule(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, unique=True)
     content = models.TextField()
     material = models.FileField(upload_to='training_materials/', null=True, blank=True)
     completion_time = models.PositiveIntegerField(help_text="Time in minutes")  # Estimated time
@@ -30,3 +30,23 @@ class TrainingProgress(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.module.title} - {'Completed' if self.completed else 'Incomplete'}"
+
+class Feedback(models.Model):
+    """
+    Model to store feedback for training modules.
+    """
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="feedbacks"
+    )
+    module = models.ForeignKey(
+        'TrainingModule',
+        on_delete=models.CASCADE,
+        related_name="feedbacks"
+    )
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Feedback by {self.user.username} on {self.module.title}"

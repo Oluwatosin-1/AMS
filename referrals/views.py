@@ -39,14 +39,7 @@ def referral_tree(request):
     ]
 
     return render(request, 'affiliates/referral_tree.html', {'referral_tree': referral_tree})
-
- # My Banner View
-@login_required
-def my_banner(request):
-    if request.user.user_type != 'affiliate':
-        return HttpResponseForbidden("You are not authorized to access this page.")
-    return render(request, 'affiliates/my_banner.html')
-
+ 
 @login_required
 def recent_referrals(request):
     """Fetch recent referrals."""

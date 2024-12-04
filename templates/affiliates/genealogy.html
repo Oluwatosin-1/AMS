@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="section-header">
+  <h1><i class="fa fa-fw fa-sitemap"></i> Member Genealogy</h1>
+  <p class="text-muted">Role: <strong>{{ user.user_type|capfirst }}</strong></p>
+</div>
+
+<div class="section-body">
+  <!-- Tab Navigation -->
+  <ul class="nav nav-tabs" id="genealogyTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="table-view-tab" data-toggle="tab" href="#table-view" role="tab" aria-controls="table-view" aria-selected="true">
+        <i class="fa fa-table"></i> Table View
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="chart-view-tab" data-toggle="tab" href="#chart-view" role="tab" aria-controls="chart-view" aria-selected="false">
+        <i class="fa fa-sitemap"></i> Hierarchical Chart View
+      </a>
+    </li>
+  </ul>
+
+  <div class="tab-content mt-4 px-3" id="genealogyTabContent">
+    <!-- Table View -->
+    <div class="tab-pane fade show active" id="table-view" role="tabpanel" aria-labelledby="table-view-tab">
+      <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+          <h4>Member Genealogy - Table View</h4>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+              <thead class="thead-dark">
+                <tr>
+                  <th>Affiliate Name</th>
+                  <th>Email</th>
+                  <th>Rank</th>
+                  <th>Total Referrals</th>
+                  <th>Join Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if genealogy %}
+                  {% for member in genealogy %}
+                  <tr>
+                    <td>{{ member.name }}</td>
+                    <td>{{ member.email }}</td>
+                    <td>{{ member.rank }}</td>
+                    <td>{{ member.referrals }}</td>
+                    <td>{{ member.join_date|date:"Y-m-d" }}</td>
+                  </tr>
+                  {% endfor %}
+                {% else %}
+                <tr>
+                  <td colspan="5" class="text-center">No members in your genealogy.</td>
+                </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hierarchical Chart View -->
+    <div class="tab-pane fade" id="chart-view" role="tabpanel" aria-labelledby="chart-view-tab">
+      <div class="card mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+          <h4>Organogram View</h4>
+          <input type="text" id="searchNode" class="form-control w-50" placeholder="Search member by name" />
+        </div>
+        <div class="card-body">
+          <div id="genealogy-chart-container">
+            <div id="genealogy-chart" class="Treant"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Include Treant.js -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/treant-js/1.0/Treant.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/treant-js/1.0/Treant.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  fetch("{% url 'genealogy_tree_data' %}")
+    .then((response) => response.json())
+    .then((data) => {
+      const treeConfig = {
+        chart: {
+          container: "#genealogy-chart",
+          rootOrientation: "NORTH",
+          connectors: {
+            type: "step",
+            style: {
+              "stroke-width": 2,
+              stroke: "#555",
+            },
+          },
+          node: {
+            collapsable: true,
+          },
+          animation: {
+            nodeSpeed: 300,
+            connectorsSpeed: 300,
+          },
+          zoom: {
+            enabled: true,
+            scale: true,
+          },
+        },
+        nodeStructure: data,
+      };
+
+      const tree = new Treant(treeConfig);
+
+      // Search Functionality
+      const searchInput = document.getElementById("searchNode");
+      searchInput.addEventListener("input", (e) => {
+        const query = e.target.value.toLowerCase();
+        document.querySelectorAll(".node").forEach((node) => {
+          const name = node.textContent.toLowerCase();
+          node.style.display = name.includes(query) ? "block" : "none";
+        });
+      });
+    });
+});
+</script>
+
+<style>
+  /* General Layout */
+  .section-body {
+    margin-top: 20px;
+  }
+  
+  .card {
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 20px; /* Ensure proper spacing between cards */
+  }
+  
+  .card-header {
+    padding: 15px;
+    background-color: #343a40; /* Updated for a consistent look */
+    color: white;
+  }
+  
+  .table {
+    margin-bottom: 0;
+  }
+  
+  .table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+  }
+  
+  .thead-dark th {
+    background-color: #495057;
+    color: white;
+  }
+  
+  /* Chart Styling */
+  /* Updated Node Spacing */
+  .node {
+    border-radius: 10px;
+    padding: 15px; /* Slightly increased padding for better readability */
+    background-color: #f9f9f9;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 30px 15px; /* Add vertical and horizontal spacing */
+    transition: all 0.3s ease-in-out; /* Smooth hover transition */
+  }
+  
+  .node:hover {
+    background-color: #e0f7fa;
+    cursor: pointer;
+    transform: scale(1.05); /* Subtle zoom on hover for better interactivity */
+  }
+  
+  .node.top-node {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .node.direct-referral-node {
+    background-color: #ff9800;
+    color: white;
+  }
+  
+  .node.other-referral-node {
+    background-color: #2196f3;
+    color: white;
+  }
+  
+  /* Additional Chart Spacing */
+  #genealogy-chart-container {
+    display: flex;
+    justify-content: center;
+    overflow-x: auto;
+    padding: 20px 15px; /* Consistent padding on all sides */
+  }
+  
+  /* Breadcrumb */
+  .breadcrumb {
+    background: none;
+    margin-bottom: 15px;
+    padding: 5px;
+    font-size: 0.9rem; /* Slightly smaller font size for breadcrumbs */
+  }
+  
+  .breadcrumb-item {
+    color: #007bff;
+  }
+  
+  .breadcrumb-item.active {
+    color: #495057;
+  }
+  
+  /* Card Body */
+  .card-body {
+    padding: 20px;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .node {
+      margin: 20px 10px; /* Adjusted spacing for smaller screens */
+      padding: 10px;
+    }
+  
+    #genealogy-chart-container {
+      padding: 15px 10px; /* Reduce padding for smaller screens */
+    }
+  
+    .breadcrumb {
+      font-size: 0.8rem; /* Smaller breadcrumbs on smaller screens */
+    }
+  }
+  
+</style>
+{% endblock %}

@@ -158,3 +158,10 @@ ADMIN_EMAIL = 'tosin@skillsquared.com'
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
  
+ # settings.py
+# PAYSTACK_SECRET_KEY = 'sk_live_6344cbffe03559e7278621baa2d3a931db78d16b'
+# PAYSTACK_PUBLIC_KEY = 'pk_live_dbec25670f16855fb1e2f89d8cd591950e0ea426'
+
+#test mode
+PAYSTACK_SECRET_KEY = 'sk_test_f7baaab7afc70c85af7b7363d4c7a8577e113a71'
+PAYSTACK_PUBLIC_KEY = 'pk_test_f577a3172066ea782fd4c191299f6ba98cc2940a'

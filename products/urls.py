@@ -16,7 +16,6 @@ urlpatterns = [
     # Generate affiliate link
     path('product/<int:product_id>/generate-link/', generate_affiliate_link, name='generate_affiliate_link'),
     # Create new product (Admin Only)
-    path('product/create/', create_product, name='create_product'),
-    path('purchase-success/', PurchaseSuccessView.as_view(), name='purchase_success'),
+    path('product/create/', create_product, name='create_product'), 
 ]
 

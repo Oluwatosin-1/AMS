@@ -1,7 +1,9 @@
 from django.db import models
 from django.conf import settings 
 from django.db.models import Sum
-
+from django.db.models.functions import TruncMonth 
+from django.db.models import Count, Sum
+from products.models import ProductPurchase
 from referrals.models import Referral 
 from .managers import AffiliateManager  # Custom manager for Affiliates
 
@@ -29,6 +31,30 @@ class Affiliate(BaseModel):
     def increase_referrals(self):
         self.referrals += 1
         self.save()
+        
+    def get_rank_title(self):
+        if hasattr(self, 'rank') and self.rank.current_rank:
+            return self.rank.current_rank.title
+        return "No Rank"
+
+    def get_performance_data(self):
+        """Generate performance data for the affiliate."""
+        performance_data = ProductPurchase.objects.filter(affiliate=self).annotate(
+            month=TruncMonth('purchased_at')
+        ).values('month').annotate(
+            total_sales=Count('id'),
+            total_commissions=Sum('commission_earned')
+        ).order_by('month')
+
+        chart_labels = [data['month'].strftime('%b %Y') for data in performance_data]
+        chart_sales = [data['total_sales'] for data in performance_data]
+        chart_commissions = [data['total_commissions'] for data in performance_data]
+
+        return {
+            'chart_labels': chart_labels,
+            'chart_sales': chart_sales,
+            'chart_commissions': chart_commissions,
+        }
 
     def calculate_total_earnings(self):
         """Calculate total earnings including product commissions, referrals, and rank rewards."""

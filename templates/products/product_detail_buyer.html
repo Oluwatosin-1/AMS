@@ -1,0 +1,120 @@
+{% extends 'minimal_base.html' %}
+{% load static %}
+{% block title %}{{ object.name }}{% endblock %}
+
+{% block content %}
+<div class="section">
+  <div class="section-header">
+    <h1 class="text-center">{{ object.name }}</h1>
+  </div>
+  <div class="section-body">
+    <div class="row">
+      <!-- Product Image -->
+      <div class="col-md-6">
+        <img
+          src="{% if object.image %}{{ object.image.url }}{% else %}{% static 'images/default-product.jpg' %}{% endif %}"
+          alt="{{ object.name }}"
+          class="img-fluid rounded shadow-sm"
+        />
+      </div>
+
+      <!-- Product Details -->
+      <div class="col-md-6">
+        <div class="card shadow">
+          <div class="card-body">
+            <h4 class="card-title text-primary">{{ object.name }}</h4>
+            <p class="card-text text-muted">{{ object.description }}</p>
+            <p class="text-success"><strong>Price:</strong> ${{ object.price }}</p>
+            <p><strong>Category:</strong> {{ object.get_category_display }}</p>
+
+            {% if affiliate_ref and affiliate_name %}
+                <div class="alert alert-info">
+                    <i class="fa fa-user"></i> You were referred by Affiliate: <strong>{{ affiliate_name }}</strong>
+                </div>
+            {% elif affiliate_ref %}
+                <div class="alert alert-info">
+                    <i class="fa fa-user"></i> You were referred by Affiliate ID: <strong>{{ affiliate_ref }}</strong>
+                </div>
+            {% endif %}
+
+
+            <!-- Purchase Form -->
+            <form id="paymentForm" method="post">
+              {% csrf_token %}
+              <input type="hidden" id="productID" value="{{ object.id }}">
+              <div class="form-group">
+                <label for="email">Your Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  class="form-control"
+                  placeholder="Enter your email address"
+                  required
+                />
+              </div>
+              <button type="button" class="btn btn-success btn-block" onclick="makePayment()">Pay with Paystack</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Information Section -->
+    <div class="row mt-4">
+      <div class="col-md-12">
+        <div class="card shadow">
+          <div class="card-header">
+            <h5 class="mb-0">Why Choose {{ object.name }}?</h5>
+          </div>
+          <div class="card-body">
+            <ul>
+              <li>High quality and reliability</li>
+              <li>Affordable price</li>
+              <li>Trusted by thousands of customers</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script>
+  function makePayment() {
+    const email = document.getElementById('email').value;
+    const productID = document.getElementById('productID').value;
+
+    if (!email) {
+        alert("Please enter your email address.");
+        return;
+    }
+
+    console.log("Email:", email);  // Debugging line
+    console.log("Product ID:", productID);  // Debugging line
+
+    fetch(`/payments/initialize/${productID}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}',
+        },
+        body: JSON.stringify({ email: email })  // Ensure email is sent in the body
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.payment_url) {
+            window.location.href = data.payment_url; // Redirect to Paystack
+        } else {
+            console.error("Error:", data.error);
+            alert(data.error || "Payment initialization failed.");
+        }
+    })
+    .catch(error => {
+        console.error("Network Error:", error);
+        alert("An error occurred. Please try again.");
+    });
+}
+
+  </script>
+{% endblock %}

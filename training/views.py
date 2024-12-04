@@ -2,23 +2,42 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.utils.timezone import now
-from .models import TrainingModule, TrainingProgress
-
+from .models import Feedback, TrainingModule, TrainingProgress
+from django.contrib.admin.views.decorators import staff_member_required
 
 @login_required
 def training_modules(request):
-    """Display available training modules with progress status."""
+    """
+    Display available training modules categorized into:
+    - Not Started
+    - In Progress
+    - Completed
+    """
     modules = TrainingModule.objects.all()
-    progress_mapping = {
-        module: TrainingProgress.objects.filter(user=request.user, module=module).first()
-        for module in modules
+    user_progress = {
+        progress.module_id: progress
+        for progress in TrainingProgress.objects.filter(user=request.user)
     }
 
-    return render(request, 'trainings/modules.html', {
-        'modules': modules,
-        'progress_mapping': progress_mapping
-    })
+    categorized_modules = {
+        'not_started': [],
+        'in_progress': [],
+        'completed': [],
+    }
 
+    for module in modules:
+        progress = user_progress.get(module.id)
+        if not progress:
+            categorized_modules['not_started'].append(module)
+        elif progress.completed:
+            categorized_modules['completed'].append((module, progress))
+        else:
+            categorized_modules['in_progress'].append((module, progress))
+
+    context = {
+        'categorized_modules': categorized_modules,
+    }
+    return render(request, 'trainings/modules.html', context)
 
 @login_required
 def start_training(request, module_id):
@@ -28,10 +47,8 @@ def start_training(request, module_id):
         user=request.user,
         module=module
     )
-
     if progress.completed:
         return redirect('training_modules')  # Already completed
-
     return render(request, 'trainings/start_training.html', {'module': module})
 
 
@@ -54,13 +71,11 @@ def verify_training_completion(request, progress_id):
     """Admin verifies training completion."""
     if not request.user.is_superuser:
         return HttpResponseForbidden("Only admins can verify training completions.")
-
     progress = get_object_or_404(TrainingProgress, id=progress_id)
     if request.method == 'POST':
         progress.admin_verified = True
         progress.save()
         return redirect('admin_training_verifications')
-
     return render(request, 'trainings/verify_completion.html', {'progress': progress})
 
 def delete_training_module(request, pk):
@@ -75,16 +90,50 @@ def delete_training_module(request, pk):
     return render(request, 'training/confirm_delete.html', {'module': module})
  
  # Training Materials View
+
 @login_required
 def training_materials(request):
+    """Display available training materials."""
     if request.user.user_type != 'affiliate':
         return HttpResponseForbidden("You are not authorized to access this page.")
+    
     training_modules = TrainingModule.objects.all()
     return render(request, 'trainings/materials.html', {'modules': training_modules})
 
 @login_required
 def feedback(request):
+    """
+    Handle training module feedback for affiliates.
+    Display submitted feedback and allow new feedback submission.
+    """
     if request.user.user_type != 'affiliate':
         return HttpResponseForbidden("You are not authorized to access this page.")
+    
+    # Retrieve previously submitted feedback by the logged-in user
+    submitted_feedback = Feedback.objects.filter(user=request.user).select_related('module')
+
+    if request.method == 'POST':
+        feedback_text = request.POST.get('feedback')
+        module_id = request.POST.get('module_id')
+        module = get_object_or_404(TrainingModule, id=module_id)
+
+        # Save feedback
+        Feedback.objects.create(user=request.user, module=module, text=feedback_text)
+
+        return redirect('feedback')  # Redirect to feedback page after submission
+
+    # Fetch training modules for feedback form
     training_modules = TrainingModule.objects.all()
-    return render(request, 'trainings/feedback.html', {'modules': training_modules})
+    
+    return render(request, 'trainings/feedback.html', {
+        'modules': training_modules,
+        'submitted_feedback': submitted_feedback
+    })
+
+@staff_member_required
+def feedback_list(request):
+    """
+    View feedback for training modules.
+    """
+    feedbacks = Feedback.objects.select_related('user', 'module').order_by('-created_at')
+    return render(request, 'trainings/feedback_list.html', {'feedbacks': feedbacks})

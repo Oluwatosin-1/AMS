@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="section-header">
+  <h1><i class="fa fa-fw fa-store"></i> Store</h1>
+</div>
+
+<div class="section-body">
+  <!-- Filter and Search Row -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <form method="get" action="{% url 'store' %}">
+        <div class="form-group">
+          <div class="input-group">
+            <select name="category" class="custom-select">
+              <option value="">All Categories</option>
+              {% for category, display_name in product_categories %}
+                <option value="{{ category }}" {% if selected_category == category %}selected{% endif %}>
+                  {{ display_name }}
+                </option>
+              {% endfor %}
+            </select>
+            <div class="input-group-append">
+              <button class="btn btn-primary" type="submit">
+                <i class="fa fa-filter"></i> Filter
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="col-md-6">
+      <form method="get" action="{% url 'store' %}">
+        <div class="form-group">
+          <div class="input-group">
+            <input name="search" class="form-control" placeholder="Search Products..." value="{{ search_query }}">
+            <div class="input-group-append">
+              <button class="btn btn-primary" type="submit">
+                <i class="fa fa-search"></i> Search
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Products Grid -->
+  <div class="row">
+    {% for product in products %}
+      <div class="col-sm-12 col-md-6 col-lg-4 mb-4">
+        <div class="card shadow-sm h-100">
+          <img
+            src="{% if product.image %}{{ product.image.url }}{% else %}/static/images/default-product.jpg{% endif %}"
+            class="card-img-top img-fluid rounded"
+            alt="{{ product.name }}"
+          />
+          <div class="card-body">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <p class="card-text text-muted">{{ product.description|truncatewords:15 }}</p>
+            <div>
+              <strong>${{ product.price }}</strong>
+              <span class="text-small text-muted">/ Onetime</span>
+            </div>
+          </div>
+          <div class="card-footer d-flex justify-content-between align-items-center">
+            <a href="{% url 'product_detail' product.id %}" class="btn btn-info btn-sm" data-toggle="tooltip" title="View Details">
+              <i class="fa fa-info-circle"></i> Details
+            </a>
+            {% if product.affiliate_link %}
+              <button 
+                class="btn btn-primary btn-sm" 
+                onclick="navigator.clipboard.writeText('{{ product.affiliate_link }}'); alert('Product link copied to clipboard!');"
+                data-toggle="tooltip"
+                title="Share Link">
+                <i class="fa fa-share"></i> Share
+              </button>
+            {% else %}
+              <span class="text-muted small">No link available</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12 text-center">
+        <p class="text-muted">No products available.</p>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -1,5 +1,12 @@
 from django.apps import apps
 
+from django.db.models.functions import TruncMonth
+from django.db.models import Count, Sum
+from django.utils.timezone import now
+
+from products.models import ProductPurchase
+
+
 def update_affiliate_rank(affiliate):
     """Update the rank of an affiliate based on referral statistics."""
     Affiliate = apps.get_model('affiliates', 'Affiliate')
@@ -30,3 +37,25 @@ def update_affiliate_rank(affiliate):
                 print(f"Affiliate {affiliate.user.username} promoted to rank: {rank.title}")
                 return rank
     return None
+
+def get_affiliate_performance_data(affiliate):
+    """Generate performance data for the affiliate dashboard."""
+    # Aggregate performance data by month
+    performance_data = ProductPurchase.objects.filter(affiliate=affiliate).annotate(
+        month=TruncMonth('purchased_at')
+    ).values('month').annotate(
+        total_sales=Count('id'),
+        total_commissions=Sum('commission_earned')
+    ).order_by('month')
+
+    # Format data for chart
+    chart_labels = [data['month'].strftime('%b %Y') for data in performance_data]
+    chart_sales = [data['total_sales'] for data in performance_data]
+    chart_commissions = [data['total_commissions'] for data in performance_data]
+
+    # Return performance metrics
+    return {
+        'chart_labels': chart_labels,
+        'chart_sales': chart_sales,
+        'chart_commissions': chart_commissions,
+    }

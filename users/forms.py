@@ -3,16 +3,57 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 from affiliates.models import Affiliate
 from .models import CustomUser , UserProfile
+from django import forms
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit, Layout, Row, Column
+from .models import UserProfile
 
 class UserProfileForm(forms.ModelForm):
-    """Form for creating and updating user profiles."""
     class Meta:
         model = UserProfile
         fields = [
-            'phone_number', 'address', 'city', 'state', 'country',
-            'website_url', 'tax_identification_number', 'preferred_payment_method',
-            'bank_account_details'
+            'phone_number',
+            'address',
+            'city',
+            'state',
+            'country',
+            'website_url',
+            'tax_identification_number',
+            'preferred_payment_method',
+            'bank_account_details',
         ]
+        widgets = {
+            'address': forms.Textarea(attrs={'rows': 3}),
+            'bank_account_details': forms.Textarea(attrs={'rows': 3}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class = 'needs-validation'
+        self.helper.attrs = {'novalidate': ''}
+        self.helper.layout = Layout(
+            Row(
+                Column('phone_number', css_class='form-group col-md-6 mb-0'),
+                Column('website_url', css_class='form-group col-md-6 mb-0'),
+            ),
+            Row(
+                Column('address', css_class='form-group col-md-12 mb-0'),
+            ),
+            Row(
+                Column('city', css_class='form-group col-md-4 mb-0'),
+                Column('state', css_class='form-group col-md-4 mb-0'),
+                Column('country', css_class='form-group col-md-4 mb-0'),
+            ),
+            Row(
+                Column('tax_identification_number', css_class='form-group col-md-6 mb-0'),
+                Column('preferred_payment_method', css_class='form-group col-md-6 mb-0'),
+            ),
+            Row(
+                Column('bank_account_details', css_class='form-group col-md-12 mb-4'),
+            ),
+            Submit('submit', 'Save Profile', css_class='btn btn-primary btn-block mt-3')
+        )
 
 
 class AffiliateRegistrationForm(UserCreationForm):

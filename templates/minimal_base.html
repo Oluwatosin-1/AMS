@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Product Details{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar-bg"></div>
+    <nav class="navbar navbar-expand-lg main-navbar">
+        <div class="container">
+            <!-- Removed the duplicate h4 here -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>   
+            <ul class="navbar-nav navbar-right ml-auto">
+                {% if user.is_authenticated %}
+                <li class="dropdown">
+                    <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+                        <img alt="image" src="{% static 'assets/image/mbr_image_1.jpg' %}" class="rounded-circle mr-1">
+                        <div class="d-sm-none d-lg-inline-block">Hello, {{ user.username }}</div>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a href="{% url 'view_profile' %}" class="dropdown-item has-icon">
+                            <i class="far fa-user-circle"></i> Profile
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="{% url 'logout' %}" class="dropdown-item has-icon text-danger">
+                            <i class="fas fa-door-open"></i> Logout
+                        </a>
+                    </div>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a href="{% url 'login' %}" class="nav-link">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'register_user' %}" class="nav-link">Sign Up</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Header Placeholder -->
+    <div class="header-placeholder" style="height: 50px; background: linear-gradient(90deg, #0c0c0c, #1c1c1c); border-bottom: 3px solid #007733;">
+        <h4 class="text-center text-white py-2 font-weight-bold">Skillsquared Affiliate Management System</h4>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mt-4">
+        {% block content %}
+        <!-- Content for specific pages -->
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer bg-dark text-white py-3 mt-4">
+        <div class="container text-center">
+            <p>&copy; 2024 Skillsquared Affiliate Management System. All Rights Reserved.</p>
+            <div class="bullet"></div>
+            <a href="javascript:;" class="text-info" data-toggle="modal" data-target="#termsModal">Terms and Conditions</a>
+        </div>
+    </footer>
+
+    <!-- Optional Terms Modal -->
+    <div class="modal fade" id="termsModal" tabindex="-1" role="dialog" aria-labelledby="termsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="termsModalLabel">Terms and Conditions</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Your terms and conditions content goes here.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+</body>
+</html>

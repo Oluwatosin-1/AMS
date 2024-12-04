@@ -1,23 +1,77 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Profile</title>
-</head>
-<body>
-    <h1>Your Profile</h1>
-    <p><strong>Full Name:</strong> {{ profile.user.full_name }}</p>
-    <p><strong>Email:</strong> {{ profile.user.email }}</p>
-    <p><strong>Phone Number:</strong> {{ profile.phone_number }}</p>
-    <p><strong>Address:</strong> {{ profile.address }}</p>
-    <p><strong>City:</strong> {{ profile.city }}</p>
-    <p><strong>State:</strong> {{ profile.state }}</p>
-    <p><strong>Country:</strong> {{ profile.country }}</p>
-    <p><strong>Website:</strong> <a href="{{ profile.website_url }}">{{ profile.website_url }}</a></p>
-    <p><strong>Tax ID:</strong> {{ profile.tax_identification_number }}</p>
-    <p><strong>Preferred Payment Method:</strong> {{ profile.preferred_payment_method }}</p>
-    <p><strong>Bank Account Details:</strong> {{ profile.bank_account_details }}</p>
-    <a href="{% url 'update_profile' %}">Edit Profile</a>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block content %}
+<div class="section-header">
+  <h1><i class="fa fa-fw fa-user-circle"></i> Your Profile</h1>
+</div>
+
+<div class="section-body">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h4>Profile Details</h4>
+        </div>
+        <div class="card-body">
+          <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <strong>Full Name:</strong>
+              <span>{{ profile.user.full_name|default:"Not Provided" }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <strong>Email:</strong>
+              <span>{{ profile.user.email }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <strong>Phone Number:</strong>
+              <span>{{ profile.phone_number|default:"Not Provided" }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <strong>Address:</strong>
+              <span>{{ profile.address|default:"Not Provided" }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <strong>City:</strong>
+              <span>{{ profile.city|default:"Not Provided" }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <strong>State:</strong>
+              <span>{{ profile.state|default:"Not Provided" }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <strong>Country:</strong>
+              <span>{{ profile.country|default:"Not Provided" }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <strong>Website:</strong>
+              <span>
+                {% if profile.website_url %}
+                  <a href="{{ profile.website_url }}" target="_blank">{{ profile.website_url }}</a>
+                {% else %}
+                  Not Provided
+                {% endif %}
+              </span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <strong>Tax ID:</strong>
+              <span>{{ profile.tax_identification_number|default:"Not Provided" }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <strong>Preferred Payment Method:</strong>
+              <span>{{ profile.preferred_payment_method|default:"Not Provided" }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <strong>Bank Account Details:</strong>
+              <span>{{ profile.bank_account_details|default:"Not Provided" }}</span>
+            </li>
+          </ul>
+        </div>
+        <div class="card-footer text-center">
+          <a href="{% url 'update_profile' %}" class="btn btn-primary">
+            <i class="fa fa-edit"></i> Edit Profile
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

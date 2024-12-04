@@ -12,7 +12,7 @@ from django.contrib import messages
 
 def home(request):
     """Display the home page."""
-    return render(request, 'index2.html')
+    return render(request, 'users/login.html')
 
 def register_user(request):
     """Register a new user and handle referrals."""
@@ -82,7 +82,6 @@ class CustomLoginView(LoginView):
             return reverse('affiliate_dashboard')
         return reverse('login')  # Default fallback
 
-
 @login_required
 def view_profile(request):
     """View the logged-in user's profile."""
@@ -111,7 +110,11 @@ def create_profile(request):
     else:
         form = UserProfileForm()
 
-    return render(request, 'users/create_profile.html', {'form': form})
+    return render(request, 'users/create_profile.html', {
+        'form': form,
+        'form_title': 'Create Your Profile',
+        'submit_button_text': 'Create Profile',
+    })
 
 @login_required
 def update_profile(request):
@@ -130,4 +133,8 @@ def update_profile(request):
     else:
         form = UserProfileForm(instance=profile)
 
-    return render(request, 'users/update_profile.html', {'form': form})
+    return render(request, 'users/update_profile.html', {
+        'form': form,
+        'form_title': 'Update Your Profile',
+        'submit_button_text': 'Update Profile',
+    })

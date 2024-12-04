@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="section-header">
+  <h1><i class="fa fa-fw fa-book"></i> Training Materials</h1>
+</div>
+
+<div class="section-body">
+  <div class="row">
+    {% for module in modules %}
+    <div class="col-md-6 col-lg-4 mb-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">{{ module.title }}</h5>
+          <p class="card-text">{{ module.content|truncatewords:15 }}</p>
+          <p><strong>Estimated Time:</strong> {{ module.completion_time }} minutes</p>
+        </div>
+        <div class="card-footer d-flex justify-content-between align-items-center">
+          {% if module.material %}
+          <a href="{{ module.material.url }}" class="btn btn-info btn-sm" target="_blank">
+            <i class="fa fa-download"></i> Download Material
+          </a>
+          {% else %}
+          <span class="text-muted small">No material available</span>
+          {% endif %}
+          <a href="{% url 'start_training' module.id %}" class="btn btn-primary btn-sm">
+            <i class="fa fa-play-circle"></i> Start Training
+          </a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center">
+      <p class="text-muted">No training materials available.</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

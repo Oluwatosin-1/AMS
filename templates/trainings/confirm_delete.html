@@ -1,17 +1,23 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Confirm Deletion</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 
-</head>
-<body>
-    <h2>Are you sure you want to delete "{{ module.name }}"?</h2>
+{% block content %}
+<div class="section-header">
+    <h1><i class="fa fa-trash-alt"></i> Confirm Deletion</h1>
+</div>
+
+<div class="section-body">
+    <div class="alert alert-warning">
+        <p>Are you sure you want to delete the module "<strong>{{ module.title }}</strong>"?</p>
+    </div>
     <form method="post">
         {% csrf_token %}
-        <button type="submit">Yes, delete</button>
-        <a href="{% url 'training_module_list' %}">Cancel</a>
+        <button type="submit" class="btn btn-danger">
+            <i class="fa fa-trash"></i> Yes, Delete
+        </button>
+        <a href="{% url 'training_module_list' %}" class="btn btn-secondary">
+            <i class="fa fa-arrow-left"></i> Cancel
+        </a>
     </form>
-</body>
-</html>
+</div>
+{% endblock %}

@@ -1,10 +1,9 @@
 from django.db import models
 from django.urls import reverse
 from django.core.validators import RegexValidator
-from decimal import Decimal
+from decimal import Decimal 
 
-from referrals.models import Referral
-from utils.referrals import track_referral_commission
+
 class Product(models.Model):
     """Product model with commission rates."""
     CATEGORY_CHOICES = [
@@ -78,19 +77,19 @@ class AffiliateProductLink(models.Model):
 
 class ProductPurchase(models.Model):
     product = models.ForeignKey('Product', on_delete=models.CASCADE)
-    affiliate = models.ForeignKey(
-        'affiliates.Affiliate', on_delete=models.SET_NULL, null=True, blank=True
-    )
+    affiliate = models.ForeignKey('affiliates.Affiliate', on_delete=models.SET_NULL, null=True, blank=True)
     client_email = models.EmailField()
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     purchased_at = models.DateTimeField(auto_now_add=True)
     commission_earned = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    paystack_reference = models.CharField(max_length=100, unique=True, null=True, blank=True)
+    is_paid = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        """
-        Calculate commission for valid product purchases.
-        """
         if self.affiliate:
             commission_rate = self.product.get_commission_rate()
             self.commission_earned = Decimal(self.amount) * Decimal(commission_rate)
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.product.name} - {self.client_email} - {self.is_paid}"

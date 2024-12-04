@@ -1,0 +1,78 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %}
+<div class="section-header">
+  <h1><i class="fa fa-fw fa-users"></i> Your Referrals</h1>
+</div>
+
+<div class="section-body">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <p><b>Your Referral Link</b></p>
+          <p>Share this link to invite others to join as your referral:</p>
+          <div class="form-group">
+            <div class="input-group mb-3">
+              <input
+                type="text"
+                class="form-control"
+                value="{{ referral_link }}"
+                id="referralLink"
+                readonly
+              />
+              <div class="input-group-append">
+                <button
+                  class="btn btn-primary"
+                  type="button"
+                  onclick="copyInputText('referralLink')"
+                >
+                  <i class="fa fa-copy"></i> Copy Link
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p><b>Your Referrals</b></p>
+          {% if referrals %}
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Join Date</th>
+                <th>Referrals Made</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for referral in referrals %}
+              <tr>
+                <td>{{ referral.name }}</td>
+                <td>{{ referral.email }}</td>
+                <td>{{ referral.join_date|date:"Y-m-d" }}</td>
+                <td>{{ referral.referrals_made }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p>You haven't referred anyone yet.</p>
+          {% endif %}
+          <a href="{% url 'affiliate_dashboard' %}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function copyInputText(elementId) {
+    const inputElement = document.getElementById(elementId);
+    inputElement.select();
+    inputElement.setSelectionRange(0, 99999); // For mobile devices
+    navigator.clipboard.writeText(inputElement.value).then(() => {
+      alert("Referral link copied to clipboard!");
+    });
+  }
+</script>
+{% endblock %}

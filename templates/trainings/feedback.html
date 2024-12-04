@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="section-header">
+    <h1><i class="fa fa-fw fa-comment"></i> Feedback</h1>
+</div>
+
+<div class="section-body">
+    <form method="POST" class="mb-4">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="module">Select Module</label>
+            <select name="module_id" id="module" class="form-control" required>
+                {% for module in modules %}
+                <option value="{{ module.id }}">{{ module.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="feedback">Your Feedback</label>
+            <textarea name="feedback" id="feedback" class="form-control" rows="5" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">
+            <i class="fa fa-paper-plane"></i> Submit Feedback
+        </button>
+    </form>
+
+    <h3>Submitted Feedback</h3>
+    <ul class="list-group">
+        {% for feedback in submitted_feedback %}
+        <li class="list-group-item">
+            <strong>{{ feedback.module.title }}</strong>: {{ feedback.text }}
+            <small class="text-muted d-block">Submitted on {{ feedback.created_at|date:"Y-m-d H:i" }}</small>
+        </li>
+        {% empty %}
+        <li class="list-group-item text-muted">No feedback submitted yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

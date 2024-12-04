@@ -1,38 +1,79 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Rewards</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-</head>
-<body>
-    <h1>Your Rewards</h1>
-    {% if rewards %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Rank</th>
-                    <th>Description</th>
-                    <th>Reward</th>
-                    <th>Achieved At</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for reward in rewards %}
-                    <tr>
-                        <td>{{ reward.current_rank.title }}</td>
-                        <td>{{ reward.current_rank.description }}</td>
-                        <td>${{ reward.current_rank.reward }}</td>
-                        <td>{{ reward.achieved_at|date:"Y-m-d" }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>You have not achieved any rewards yet. Keep working towards your goals!</p>
-    {% endif %}
-    <a href="{% url 'affiliate_dashboard' %}">Back to Dashboard</a>
-</body>
-</html>
+{% block content %}
+<div class="section-header">
+    <h1><i class="fa fa-fw fa-gift"></i> Your Rewards</h1>
+</div>
+
+<div class="section-body">
+    <div class="row">
+        <!-- Summary Section -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Total Earnings</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li>
+                            <strong>Product Commissions:</strong> ${{ product_commissions }}
+                        </li>
+                        <li>
+                            <strong>Referral Commissions:</strong> ${{ referral_commissions }}
+                        </li>
+                        <li>
+                            <strong>Rank Rewards:</strong> ${{ rank_rewards }}
+                        </li>
+                        <li>
+                            <strong>Total Earnings:</strong> ${{ total_earnings }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rewards Section -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Rewards Achieved</h4>
+                </div>
+                <div class="card-body">
+                    {% if rewards %}
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Description</th>
+                                    <th>Reward</th>
+                                    <th>Achieved At</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for reward in rewards %}
+                                    <tr>
+                                        <td>{{ reward.current_rank.title }}</td>
+                                        <td>{{ reward.current_rank.description }}</td>
+                                        <td>${{ reward.current_rank.reward }}</td>
+                                        <td>{{ reward.achieved_at|date:"Y-m-d" }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p class="text-muted">You have not achieved any rewards yet. Keep working towards your goals!</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12 text-center">
+            <a href="{% url 'affiliate_dashboard' %}" class="btn btn-primary">
+                <i class="fa fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

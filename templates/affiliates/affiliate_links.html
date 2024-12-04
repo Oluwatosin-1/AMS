@@ -1,57 +1,63 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Affiliate Links</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-</head>
-<body>
-    <h1>Your Affiliate Links</h1>
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %}
+<div class="section-header">
+  <h1><i class="fa fa-fw fa-link"></i> Your Affiliate Links</h1>
+</div>
 
-    <h2>Existing Links</h2>
-    {% if links %}
-        <table>
+<div class="section-body">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <p><b>Existing Links</b></p>
+          {% if links %}
+          <table class="table table-striped">
             <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Affiliate Link</th>
-                    <th>Clicks</th>
-                    <th>Actions</th>
-                </tr>
+              <tr>
+                <th>Product</th>
+                <th>Affiliate Link</th>
+                <th>Clicks</th>
+                <th>Actions</th>
+              </tr>
             </thead>
             <tbody>
-                {% for link in links %}
-                    <tr>
-                        <td>{{ link.product.name }}</td>
-                        <td><a href="{{ link.unique_url }}" target="_blank">{{ link.unique_url }}</a></td>
-                        <td>{{ link.clicks }}</td>
-                        <td>
-                            <a href="{{ link.unique_url }}" target="_blank">Preview</a>
-                        </td>
-                    </tr>
-                {% endfor %}
+              {% for link in links %}
+              <tr>
+                <td>{{ link.product.name }}</td>
+                <td>
+                  <a href="{{ link.unique_url }}" target="_blank">{{ link.unique_url }}</a>
+                </td>
+                <td>{{ link.clicks }}</td>
+                <td>
+                  <a href="{{ link.unique_url }}" target="_blank" class="btn btn-sm btn-primary">Preview</a>
+                </td>
+              </tr>
+              {% endfor %}
             </tbody>
-        </table>
-    {% else %}
-        <p>No affiliate links have been generated yet.</p>
-    {% endif %}
+          </table>
+          {% else %}
+          <p>No affiliate links have been generated yet.</p>
+          {% endif %}
 
-    <h2>Generate New Links</h2>
-    {% if products_without_links %}
-        <ul>
+          <p><b>Generate New Links</b></p>
+          {% if products_without_links %}
+          <ul>
             {% for product in products_without_links %}
-                <li>
-                    {{ product.name }}
-                    <a href="{% url 'generate_affiliate_link' product.id %}">Generate Link</a>
-                </li>
+            <li>
+              {{ product.name }}
+              <a href="{% url 'generate_affiliate_link' product.id %}" class="btn btn-sm btn-success">Generate Link</a>
+            </li>
             {% endfor %}
-        </ul>
-    {% else %}
-        <p>All products already have links generated.</p>
-    {% endif %}
+          </ul>
+          {% else %}
+          <p>All products already have links generated.</p>
+          {% endif %}
 
-    <a href="{% url 'affiliate_dashboard' %}">Back to Dashboard</a>
-</body>
-</html>
+          <a href="{% url 'affiliate_dashboard' %}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

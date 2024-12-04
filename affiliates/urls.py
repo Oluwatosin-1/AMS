@@ -6,10 +6,13 @@ from .views import (
     affiliate_earnings,
     affiliate_training,
     delete_affiliate,
+    filter_genealogy_by_rank,
+    genealogy_tree_data,
     generate_referral_link,
-    list_affiliate_links, 
+    list_affiliate_links,
+    reset_genealogy, 
     update_affiliate_profile,
-    view_downline
+    view_genealogy, 
 )
 
 urlpatterns = [ 
@@ -17,7 +20,10 @@ urlpatterns = [
     path('dashboard/', AffiliateDashboardView.as_view(), name='affiliate_dashboard'),
     path('update-profile/', update_affiliate_profile, name='update_affiliate_profile'),
     path('affiliate-links/list/', list_affiliate_links, name='affiliate_links'),
-    path('downline/', view_downline, name='view_downline'),  # Add this if missing
+    path('genealogy/', view_genealogy, name='view_genealogy'),  # Add this if missing
+    path('genealogy/reset/', reset_genealogy, name='genealogy_reset'),
+    path('genealogy/tree-data/', genealogy_tree_data, name='genealogy_tree_data'),
+    path('genealogy/filter/<int:rank_id>/', filter_genealogy_by_rank, name='genealogy_filter'),
     path('referral-link/', generate_referral_link, name='generate_referral_link'),
     path('affiliate-delete/<int:pk>/', delete_affiliate, name='affiliates_affiliate_delete'),
     path('affiliate-earnings/', affiliate_earnings, name='affiliate_earnings'),

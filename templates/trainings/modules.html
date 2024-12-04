@@ -1,42 +1,116 @@
-<h2>Training Modules</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Material</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for module, progress in progress_mapping.items %}
+{% extends 'base.html' %}
+{% block content %}
+<div class="section-header">
+    <h1><i class="fa fa-fw fa-book"></i> Training Modules</h1>
+</div>
+
+<div class="section-body">
+    <!-- Not Started -->
+    <h3>Not Started</h3>
+    <table class="table table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th>Title</th>
+                <th>Material</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for module in categorized_modules.not_started %}
+            <tr>
+                <td>{{ module.title }}</td>
+                <td><span class="text-muted">Locked</span></td>
+                <td>
+                    <a href="{% url 'start_training' module.id %}" class="btn btn-primary btn-sm">
+                        <i class="fa fa-play-circle"></i> Start Training
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" class="text-center text-muted">No modules available to start.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- In Progress -->
+    <h3>In Progress</h3>
+    <table class="table table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th>Title</th>
+                <th>Material</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for module, progress in categorized_modules.in_progress %}
             <tr>
                 <td>{{ module.title }}</td>
                 <td>
                     {% if module.material %}
-                        <a href="{{ module.material.url }}">Download</a>
+                    <a href="{{ module.material.url }}" class="btn btn-info btn-sm" target="_blank">
+                        <i class="fa fa-download"></i> Download
+                    </a>
                     {% else %}
-                        N/A
+                    <span class="text-muted">N/A</span>
+                    {% endif %}
+                </td>
+                <td><span class="badge badge-warning">In Progress</span></td>
+                <td>
+                    <a href="{% url 'start_training' module.id %}" class="btn btn-primary btn-sm">
+                        <i class="fa fa-play-circle"></i> Continue Training
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center text-muted">No modules in progress.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Completed -->
+    <h3>Completed</h3>
+    <table class="table table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th>Title</th>
+                <th>Material</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for module, progress in categorized_modules.completed %}
+            <tr>
+                <td>{{ module.title }}</td>
+                <td>
+                    {% if module.material %}
+                    <a href="{{ module.material.url }}" class="btn btn-info btn-sm" target="_blank">
+                        <i class="fa fa-download"></i> Download
+                    </a>
+                    {% else %}
+                    <span class="text-muted">N/A</span>
                     {% endif %}
                 </td>
                 <td>
-                    {% if progress and progress.completed %}
-                        Completed
-                        {% if progress.admin_verified %}
-                            (Verified)
-                        {% else %}
-                            (Pending Admin Verification)
-                        {% endif %}
+                    <span class="badge badge-success">Completed</span>
+                    {% if progress.admin_verified %}
+                    <span class="badge badge-primary">Verified</span>
                     {% else %}
-                        Incomplete
-                    {% endif %}
-                </td>
-                <td>
-                    {% if not progress or not progress.completed %}
-                        <a href="{% url 'start_training' module.id %}">Start Training</a>
+                    <span class="badge badge-secondary">Pending Verification</span>
                     {% endif %}
                 </td>
             </tr>
-        {% endfor %}
-    </tbody>
-</table>
+            {% empty %}
+            <tr>
+                <td colspan="3" class="text-center text-muted">No completed modules.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

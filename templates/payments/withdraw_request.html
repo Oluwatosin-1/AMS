@@ -1,14 +1,66 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="section-header">
-  <h1>Withdrawal Request</h1>
+  <h1><i class="fa fa-fw fa-wallet"></i> Withdrawal Request</h1>
 </div>
 
 <div class="section-body">
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Submit Request</button>
-  </form>
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-header">
+          <h4>Request a Withdrawal</h4>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="id_amount">Amount (Minimum Threshold: ${{ affiliate.payout_threshold }})</label>
+              <input
+                type="number"
+                name="amount"
+                id="id_amount"
+                class="form-control"
+                value="{{ form.amount.value|default_if_none:'' }}"
+              >
+            </div>
+            <div class="form-group">
+              <label for="id_payment_method">Preferred Payment Method</label>
+              <select
+                name="payment_method"
+                id="id_payment_method"
+                class="form-control"
+              >
+                {% for choice in form.payment_method.field.choices %}
+                  <option value="{{ choice.0 }}" {% if form.payment_method.value == choice.0 %}selected{% endif %}>
+                    {{ choice.1 }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">
+              <i class="fa fa-paper-plane"></i> Submit Request
+            </button>
+          </form>
+        </div>
+        <div class="card-footer">
+          <p class="text-muted">
+            <strong>Wallet Balance:</strong> ${{ wallet_balance }}<br>
+            <strong>Total Earnings:</strong> ${{ total_earnings }}<br>
+            <strong>Total Withdrawn:</strong> ${{ total_withdrawn }}
+          </p>
+          <p class="text-muted">You must meet the minimum withdrawal threshold to request a payout.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-md-12 text-center">
+      <a href="{% url 'affiliate_dashboard' %}" class="btn btn-secondary">
+        <i class="fa fa-arrow-left"></i> Back to Dashboard
+      </a>
+    </div>
+  </div>
 </div>
 {% endblock %}

@@ -3,8 +3,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-from products.views import store
-from referrals.views import my_banner
+from products.views import store 
 from training.views import feedback, training_materials
 from users.views import home
 
@@ -20,7 +19,6 @@ urlpatterns = [
     path('ranking/', include('ranking.urls')),
     path('store/', store, name='store'),
     path('training-materials/', training_materials, name='training_materials'),
-    path('my-banner/', my_banner, name='my_banner'),
     path('feedback/',feedback, name='feedback'),
 ]
 

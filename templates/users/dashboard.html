@@ -33,7 +33,7 @@
     <!-- Personal Referrals -->
     <div class="col-lg-4 col-md-6 col-sm-6 col-12">
       <div class="card card-statistic-1">
-        <a href="{% url 'view_downline' %}">
+        <a href="{% url 'view_genealogy' %}">
           <div class="card-icon bg-info">
             <i class="far fa-handshake"></i>
           </div>
@@ -104,22 +104,80 @@
               <li class="media">
                 <div class="media-body">
                   <div class="text-small">Registered</div>
-                  <div class="media-title">{{ registration_date }}</div>
+                  <div class="media-title">{{ register_date }}</div>
                 </div>
               </li>
               <li class="media">
                 <div class="media-body">
                   <div class="text-small">Name</div>
                   <div class="media-title">
-                    {{ user_name }} ({{ user_email }})
+                    {{ display_name }} ({{ user.email }})
                   </div>
                 </div>
-              </li>
+              </li> 
               <li class="media">
                 <div class="media-body">
-                  <div class="text-small">Default Referral URL</div>
+                  <div class="text-small">
+                    Products Referrals URL
+                    <a href="https://peppy.link/GoSxU" target="_blank"
+                      class="d-sm-none" data-toggle="tooltip" title="" data-original-title="https://peppy.link/GoSxU">
+                      <span class="text-small">
+                        <i class="fa fa-fw fa-external-link-alt"></i>
+                      </span>
+                    </a>
+                  </div> 
+                  {% for link in product_links %}
                   <div class="media-title">
-                    <a href="{{ referral_link }}" target="_blank">{{ referral_link }}</a>
+                    <a class="d-none d-sm-block" href="{{ link.unique_url }}"
+                      target="_blank" data-toggle="tooltip" title="" data-original-title="{{ link.unique_url }}">
+                      ({{ link.product.name }})
+                    </a>
+                    <div class="d-sm-none">
+                      <div class="form-group">
+                        <div class="input-group mb-3">
+                          <input type="text" class="form-control form-control-sm" value="{{ link.unique_url }}" id="mypeppyrefurlid" readonly=""/>
+                          <div class="input-group-append">
+                            <button class="btn btn-primary btn-sm" type="button" onclick="copyInputText('mypeppyrefurlid')"
+                              data-toggle="tooltip" title="" data-original-title="Copy link">
+                              <i class="fa fa-copy fa-fw"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div> 
+                  {% empty %}
+                  <div class="media-title">No product links generated yet.</div>
+                  {% endfor %}
+                </div>
+              </li> 
+              <li class="media">
+                <div class="media-body">
+                  <div class="text-small">
+                    Default Referral URL
+                    <a href="{{ default_referral_link }}" target="_blank" class="d-sm-none" data-toggle="tooltip" title="" data-original-title="{{ default_referral_link }}">
+                      <span class="text-small" ><i class="fa fa-fw fa-external-link-alt"></i>
+                      </span>
+                    </a>
+                  </div>
+                  <div class="media-title">
+                    <a class="d-none d-sm-block" href="{{ default_referral_link }}"
+                      target="_blank" data-toggle="tooltip" title="" data-original-title="{{ default_referral_link }}">
+                      {{ default_referral_link }}
+                    </a>
+                    <div class="d-sm-none">
+                      <div class="form-group">
+                        <div class="input-group mb-3">
+                          <input
+                            type="text" class="form-control form-control-sm" value="{{ default_referral_link }}" id="myrefurlid" readonly=""/>
+                          <div class="input-group-append">
+                            <button class="btn btn-primary btn-sm" type="button" onclick="copyInputText('myrefurlid')" data-toggle="tooltip" title="" data-original-title="Copy link">
+                              <i class="fa fa-copy fa-fw"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </li>
@@ -151,14 +209,18 @@
           <div class="summary">
             <div class="summary-info">
               {% if next_rank %}
-                <h4>
+                <h4><small
+                  ><span class="text-warning"
+                    ><i class="fas fa-caret-down"></i></span
+                  > To Rank Up</small
+                >
                   <span class="text-success"><i class="fas fa-caret-up"></i></span>
-                  Total Referrals: {{ rank.total_referral }}
+                  Total Referrals: {{ next_rank_min_total_referrals }}
                 </h4>
-                <div class="text-muted">Personal Referrals: {{ next_rank.min_personal_referrals }}</div>
+                <div class="text-muted">Personal Referrals: {{ next_rank_min_personal_referrals }}</div>
                 <h3 class="mt-2">
                   <span class="text-info"><i class="fas fa-wallet fa-fw"></i></span>
-                  Next Rank Requirements:
+                  Next Rank : {{ next_rank }}
                 </h3>
                 <div class="d-block mt-2">
                   <a href="{% url 'view_rewards' %}">View Details</a>
@@ -169,20 +231,35 @@
             </div>
 
             <div class="summary-item">
-              <h6><span class="text-muted">Attained Since</span> 5 Jul 2023</h6>
+              <h6><span class="text-muted">Attained Since</span>
+                <i class="fas fa-calendar-alt"></i> {{ register_date }}</h6>
               <ul class="list-unstyled list-unstyled-border">
                 <li class="media">
                   <div>
-                    <img class="mr-3 rounded" width="50" src="{{ rank_logo }}" alt="{{ rank }}" />
+                    <img
+                      class="mr-3 rounded"
+                      width="50"
+                      src="{{ rank_logo }}"
+                      alt="{{ rank }}"
+                    />
                   </div>
-                  <div class="media-body">{{ rank }}</div>
-                  <div class="text-muted text-small">Reward: ${{ rank_reward }}</div>
-                  <h6 class="mt-3">
-                    <div class="media-right text-right">
-                      <div class="badge badge-success">Active</div>
+                  <div class="media-body">
+                    <div class="media-title">{{ rank }}</div>
+                    <div class="text-muted text-small">
+                      Reward: ${{ rank_reward }}
                     </div>
-                    <span class="text-muted">Registration</span> 1 Mar 2022
-                  </h6>
+
+                    <h6 class="mt-3">
+                      <div class="media-right text-right">
+                        <div></div>
+                        <div><div class="badge badge-success">Active</div></div>
+                      </div>
+                      <span class="text-muted">Total User Referred: </span>{{ referrals.count }}
+                      <div>
+                        <span class="text-small"> </span>
+                      </div>
+                    </h6>
+                  </div>
                 </li>
               </ul>
             </div>
@@ -224,7 +301,7 @@
                 <div class="float-right text-small text-success"></div>
                 <div class="media-title">{{ sponsor_name }}</div>
                 <span class="text-small text-muted">
-                  <div>{{ sponsor_full_name }}</div>
+                  <div>{{ sponsor_name }}</div>
                   <div
                     data-toggle="tooltip"
                     title=""
@@ -254,7 +331,7 @@
         <div class="card-header">
           <h4>Recent Referrals</h4>
           <div class="card-header-action">
-            <a href="{% url 'view_downline' %}" class="btn btn-primary">View All</a>
+            <a href="{% url 'view_genealogy' %}" class="btn btn-primary">View All</a>
           </div>
         </div>
         <div class="card-body">
@@ -262,19 +339,24 @@
             {% if recent_referrals %}
             {% for referral in recent_referrals %}
             <li class="media">
-              <img src="{% static 'assets/image/mbr_defaultimage.jpg' %}" alt="avatar" class="mr-3 rounded-circle" width="48">
+              <img class="mr-3 rounded-circle" width="48" src="{% static 'assets/image/mbr_defaultimage.jpg' %}" alt="avatar"/>
               <div class="media-body">
-                <div class="float-right text-small text-success">{{ referral.join_date }}</div>
-                <div class="media-title">{{ referral.user.full_name }}</div>
-                <span class="text-small text-muted">
-                  <div>{{ referral.user.email }}</div>
+                <div class="float-right text-small text-success">
+                  {{ referral.join_date }}
+                </div>
+                <div class="media-title">{{ referral.user.email }}</div>
+                <span class="text-small text-muted"
+                  ><div>{{ referral.user.full_name }}</div>
+                  <div data-toggle="tooltip" title="" data-original-title="{{ referral.user.email }}">
+                    {{ referral.user.email }}
+                  </div>
                 </span>
               </div>
             </li>
-            {% endfor %}
-            {% else %}
-                    <p>You have not referred any users yet. Share your referral link to grow your network!</p>
-                {% endif %}
+              {% endfor %}
+              {% else %}
+                      <p>You have not referred any users yet. Share your referral link to grow your network!</p>
+              {% endif %} 
           </ul>
         </div>
       </div>
