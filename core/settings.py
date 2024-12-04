@@ -9,8 +9,10 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
 from pathlib import Path
+import os
+from decouple import config  # Use python-decouple for reading environment variables
+
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -147,21 +149,18 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.titan.email'  # Example for Gmail SMTP
 EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'tosin@skillsquared.com'
-EMAIL_HOST_PASSWORD = 'Gbemi@1294'
-
+EMAIL_USE_TLS = True 
 DEFAULT_FROM_EMAIL = 'tosin@skillsquared.com'
 ADMIN_EMAIL = 'tosin@skillsquared.com'  
+
+# EMAIL
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 # crispy config
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
  
- # settings.py
-# PAYSTACK_SECRET_KEY = 'sk_live_6344cbffe03559e7278621baa2d3a931db78d16b'
-# PAYSTACK_PUBLIC_KEY = 'pk_live_dbec25670f16855fb1e2f89d8cd591950e0ea426'
-
-#test mode
-PAYSTACK_SECRET_KEY = 'sk_test_f7baaab7afc70c85af7b7363d4c7a8577e113a71'
-PAYSTACK_PUBLIC_KEY = 'pk_test_f577a3172066ea782fd4c191299f6ba98cc2940a'
+# PAYSTACK
+PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY')
+PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY')
