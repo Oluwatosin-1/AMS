@@ -145,18 +145,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
  
- 
-#HTTPS 
-SECURE_SSL_REDIRECT = True  # Redirect HTTP to HTTPS
-SECURE_HSTS_SECONDS = 31536000  # Enforce HTTPS for one year
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Apply to subdomains
-SECURE_HSTS_PRELOAD = True  # Preload HSTS
-SECURE_BROWSER_XSS_FILTER = True  # Enable XSS filter
-SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent content type sniffing
-SESSION_COOKIE_SECURE = True  # Secure session cookies
-CSRF_COOKIE_SECURE = True  # Secure CSRF cookies
- 
- 
 #Email Configuration 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.titan.email'  # Example for Gmail SMTP
