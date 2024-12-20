@@ -4,6 +4,7 @@ from django.http import HttpResponseForbidden
 from django.utils.timezone import now
 from .models import Feedback, TrainingModule, TrainingProgress
 from django.contrib.admin.views.decorators import staff_member_required
+from django.core.paginator import Paginator
 
 @login_required
 def training_modules(request):
@@ -49,8 +50,14 @@ def start_training(request, module_id):
     )
     if progress.completed:
         return redirect('training_modules')  # Already completed
-    return render(request, 'trainings/start_training.html', {'module': module})
 
+    # Order videos explicitly by id
+    videos = module.videos.all().order_by('id')  # Adjust the field if needed
+    paginator = Paginator(videos, 1)  # Show 5 videos per page
+    page_number = request.GET.get('page')
+    page_videos = paginator.get_page(page_number)
+
+    return render(request, 'trainings/start_training.html', {'module': module, 'videos': page_videos})
 
 @login_required
 def complete_training_module(request, module_id):

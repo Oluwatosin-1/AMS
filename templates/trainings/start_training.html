@@ -21,7 +21,62 @@
                     </a>
                 </p>
             {% endif %}
-        </div>
+
+            {% if videos %}
+                <div>
+                    <h5>Training Videos:</h5>
+                    <ul id="video-list">
+                        {% for video in videos %}
+                            <li>
+                                <iframe 
+                                    class="training-video" 
+                                    width="560" height="315"
+                                    src="https://www.youtube.com/embed/{{ video.url|cut:'https://www.youtube.com/watch?v=' }}" 
+                                    frameborder="0" 
+                                    allow="autoplay; encrypted-media" 
+                                    allowfullscreen>
+                                </iframe>
+                                <p>{{ video.title }}</p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="pagination d-flex justify-content-between align-items-center mt-4">
+                    {% if videos.has_previous %}
+                        <a href="?page={{ videos.previous_page_number }}" class="btn btn-primary rounded-pill px-4">
+                            Previous
+                        </a>
+                    {% endif %}
+                    <button class="btn btn-secondary rounded-pill" type="button" data-bs-toggle="collapse" data-bs-target="#allVideosCollapse" aria-expanded="false" aria-controls="allVideosCollapse">
+                        All Videos
+                    </button>
+                    {% if videos.has_next %}
+                        <a href="?page={{ videos.next_page_number }}" class="btn btn-primary rounded-pill px-4">
+                            Next
+                        </a>
+                    {% endif %}
+                </div>
+
+                <!-- Collapsible Panel for All Videos -->
+                <div class="collapse mt-3" id="allVideosCollapse">
+                    <div class="card card-body">
+                        <ul>
+                            {% for video in module.videos.all %}
+                                <li>{{ video.title }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+
+            <button class="btn btn-secondary rounded-pill" type="button">
+                <a class="btn btn-secondary rounded-pill" 
+                href="{% url 'feedback' %}" target="_blank">
+                Submit Feedback
+             </a> 
+            </button>
+        </div> 
         <div class="card-footer">
             <form method="POST" action="{% url 'complete_training_module' module.id %}">
                 {% csrf_token %}
@@ -32,4 +87,19 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const videos = document.querySelectorAll(".training-video");
+        videos.forEach((video) => {
+            video.addEventListener("play", () => {
+                videos.forEach((otherVideo) => {
+                    if (otherVideo !== video) {
+                        otherVideo.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+                    }
+                });
+            });
+        });
+    });
+</script>
 {% endblock %}

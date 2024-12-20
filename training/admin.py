@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import TrainingModule, TrainingProgress, Feedback
+from .models import TrainingModule, TrainingProgress, Feedback, TrainingVideo
 
 
 @admin.register(TrainingModule)
@@ -19,6 +19,11 @@ class TrainingModuleAdmin(admin.ModelAdmin):
         return bool(obj.material)
     has_material.boolean = True
     has_material.short_description = 'Has Material'
+
+
+@admin.register(TrainingVideo)
+class TrainingVideoAdmin(admin.ModelAdmin):
+    list_display = ('title', 'url')
 
 
 @admin.register(TrainingProgress)
