@@ -39,6 +39,16 @@
                     <h4>Rewards Achieved</h4>
                 </div>
                 <div class="card-body">
+
+                     <!-- Reward Chart Section -->
+                     <div class="text-center mb-4">
+                        <!-- Direct Link to Full Image -->
+                        <a href="{% static 'assets/image/reward_chart.png' %}" target="_blank">
+                            <img src="{% static 'assets/image/reward_chart.png' %}" alt="Reward Chart" class="img-fluid rounded shadow">
+                        </a>
+                        <p class="mt-2 text-muted">Click on the chart to view in full size.</p>
+                    </div>
+                    
                     {% if rewards %}
                         <table class="table table-striped">
                             <thead>

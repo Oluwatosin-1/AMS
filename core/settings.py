@@ -129,7 +129,7 @@ USE_I18N = True
 USE_TZ = True
 
 AUTH_USER_MODEL = 'users.CustomUser'   
-LOGOUT_REDIRECT_URL = '/login/'  # Ensure this matches the path for the login page
+LOGOUT_REDIRECT_URL = '/users/login/'  # Ensure this matches the path for the login page
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -143,17 +143,19 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
- 
-#Email Configuration 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'smartronblog@gmail.com'  # Replace with your email
-EMAIL_HOST_PASSWORD = 'Gbemi@1294'  # Replace with your app-specific password
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField" 
 
-ADMIN_EMAIL = 'tosin@skillsquared.com'  
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.titan.email'  # Your SMTP provider (Titan email in this case)
+EMAIL_PORT = 587  # Use 587 for TLS or 465 for SSL
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Use environment variables for sensitive data
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = 'ceo@skillsquared.com'  # The sender email address used in emails
+SERVER_EMAIL = 'ceo@skillsquared.com'  # Email address for error notifications
+
+ADMIN_EMAIL = 'ceo@skillsquared.com'  
 
 # # EMAIL
 # EMAIL_HOST_USER = config('EMAIL_HOST_USER')

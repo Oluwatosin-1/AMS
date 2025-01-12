@@ -60,16 +60,25 @@ class AffiliateRegistrationForm(UserCreationForm):
     last_name = forms.CharField(max_length=30, required=True)
     phone_number = forms.CharField(max_length=15, required=True)
     address = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), required=True)
+    city = forms.CharField(max_length=100, required=True)
+    state = forms.CharField(max_length=100, required=True)
+    country = forms.CharField(max_length=100, required=True)
 
     class Meta:
         model = CustomUser
-        fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2']
+        fields = [
+            'first_name', 'last_name', 'username', 'email', 
+            'password1', 'password2'
+        ]
 
     def save(self, commit=True):
-        # Just create/save the User object
-        user = super().save(commit=commit)
+        user = super().save(commit=False)
+        user.user_type = 'affiliate'
+        user.full_name = f"{self.cleaned_data['first_name']} {self.cleaned_data['last_name']}"
+        if commit:
+            user.save()
         return user
-        
+    
 class AdminRegistrationForm(UserCreationForm):
     class Meta:
         model = CustomUser

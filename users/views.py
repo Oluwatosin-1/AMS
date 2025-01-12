@@ -8,6 +8,7 @@ from .forms import AffiliateRegistrationForm, AdminRegistrationForm, UserProfile
 from affiliates.models import Affiliate 
 from django.contrib.auth import logout
 from django.contrib import messages
+from django.db import transaction
 
 from django.contrib.auth.views import PasswordResetView
 from django.urls import reverse_lazy
@@ -17,6 +18,7 @@ from django.urls import reverse_lazy
 def home(request):
     """Display the home page."""
     return render(request, 'users/login.html')
+ 
 
 def register_user(request):
     """Register a new user and handle referrals."""
@@ -35,50 +37,51 @@ def register_user(request):
     if request.method == 'POST':
         user_form = AffiliateRegistrationForm(request.POST)
         if user_form.is_valid():
-            # Create the user but don't commit yet
-            user = user_form.save(commit=False)
-            # Set any additional fields before final save
-            user.user_type = 'affiliate'
-            user.full_name = (
-                f"{user_form.cleaned_data['first_name']} "
-                f"{user_form.cleaned_data['last_name']}"
-            )
-            user.save()  # Now the user is actually in the DB
+            with transaction.atomic():
+                # Create the user
+                user = user_form.save(commit=False)
+                user.user_type = 'affiliate'
+                user.full_name = f"{user_form.cleaned_data['first_name']} {user_form.cleaned_data['last_name']}"
+                user.save()
 
-            # Make sure referrer is a saved Affiliate instance
-            if referrer and not referrer.pk:
-                referrer.save()
+                # Debugging: Check user creation
+                print(f"User Created: {user.username}, {user.full_name}, {user.email}")
 
-            # Create the Affiliate record for this new user
-            affiliate = Affiliate.objects.create(user=user, referred_by=referrer)
+                # Create the affiliate entry
+                affiliate = Affiliate.objects.create(user=user, referred_by=referrer)
 
-            # Create or update the UserProfile with phone and address
-            UserProfile.objects.update_or_create(
-                user=user,
-                defaults={
-                    'phone_number': user_form.cleaned_data['phone_number'],
-                    'address': user_form.cleaned_data['address'],
-                }
-            )
+                # Debugging: Check affiliate creation
+                print(f"Affiliate Created: {affiliate.user.username}, Referred By: {referrer}")
 
-            # If we have a valid referrer, increment their referral count
-            if referrer:
-                referrer.increase_referrals()
+                # Populate the user profile
+                profile = user.profile  # Signal creates a blank profile automatically
+                profile.phone_number = user_form.cleaned_data['phone_number']
+                profile.address = user_form.cleaned_data['address']
+                profile.city = user_form.cleaned_data['city']
+                profile.state = user_form.cleaned_data['state']
+                profile.country = user_form.cleaned_data['country']
+                profile.save()
 
-            # Log the user in
-            login(request, user)
-            return redirect('affiliate_dashboard')
+                # Debugging: Check profile population
+                print(f"UserProfile Updated: {profile.phone_number}, {profile.address}")
+
+                # Update referral count if applicable
+                if referrer:
+                    referrer.increase_referrals()
+                    print(f"Referrer Updated: {referrer.user.username}, Total Referrals: {referrer.total_referrals}")
+
+                # Log the user in and redirect
+                login(request, user)
+                return redirect('affiliate_dashboard')
+        else:
+            # Debugging: Check form errors
+            print(f"Form Errors: {user_form.errors}")
+
     else:
         user_form = AffiliateRegistrationForm()
 
-    return render(
-        request, 
-        'users/register.html', 
-        {
-            'user_form': user_form,
-            'referrer': referrer
-        }
-    )
+    return render(request, 'users/register.html', {'user_form': user_form, 'referrer': referrer})
+
 
 def register_admin(request):
     if request.method == 'POST':

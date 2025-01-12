@@ -62,7 +62,18 @@
                                             {{ user_form.address|as_crispy_field }}
                                         </div>
                                     </div>
-
+                                    <div class="row">
+                                        <div class="form-group col-md-4">
+                                            {{ user_form.city|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            {{ user_form.state|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            {{ user_form.country|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    
                                     <!-- Manual password fields (keep label + toggle eye icon) -->
                                     <div class="row">
                                         <div class="form-group col-md-6 position-relative">

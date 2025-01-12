@@ -19,17 +19,7 @@ class CustomUserAdmin(UserAdmin):
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    """
-    Admin configuration for the UserProfile model.
-    """
-    list_display = (
-        'user_username', 
-        'phone_number', 
-        'city', 
-        'state', 
-        'country', 
-        'preferred_payment_method'
-    )
+    list_display = ('user_username', 'phone_number', 'city', 'state', 'country', 'preferred_payment_method')
     list_filter = ('preferred_payment_method', 'country', 'state')
     search_fields = ('user__username', 'phone_number', 'city', 'state', 'country', 'tax_identification_number')
     readonly_fields = ('user',)
@@ -41,8 +31,5 @@ class UserProfileAdmin(admin.ModelAdmin):
     )
 
     def user_username(self, obj):
-        """
-        Display the username of the associated user.
-        """
         return obj.user.username
     user_username.short_description = "User"
