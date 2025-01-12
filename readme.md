@@ -179,3 +179,4 @@ Future Enhancements
 •	Integrate third-party payment gateways (e.g., Stripe, Razorpay).
 •	Enable tiered commissions and bonuses.
 
+![image](https://github.com/user-attachments/assets/00b70375-c859-4aa0-a180-405bba4c4f79)
