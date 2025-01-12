@@ -14,6 +14,7 @@ from affiliates.models import Affiliate
 from django.http import HttpResponseForbidden
 from django.urls import reverse
 from django.conf import settings
+from decimal import Decimal  # Import Decimal
 from django.contrib import messages 
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import DetailView, FormView, View
@@ -58,6 +59,11 @@ class ProductDetailView(DetailView):
                 context['affiliate_link'] = link.unique_url
             except AffiliateProductLink.DoesNotExist:
                 context['affiliate_link'] = None
+
+            # Calculate commission based on the product's rate
+            product = self.object
+            commission_rate = Decimal(product.get_commission_rate())  # Convert to Decimal
+            context['affiliate_commission'] = product.price * commission_rate
 
         return context
 

@@ -147,15 +147,17 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
  
 #Email Configuration 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.titan.email'  # Example for Gmail SMTP
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_USE_TLS = True 
-DEFAULT_FROM_EMAIL = 'tosin@skillsquared.com'
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'smartronblog@gmail.com'  # Replace with your email
+EMAIL_HOST_PASSWORD = 'Gbemi@1294'  # Replace with your app-specific password
+
 ADMIN_EMAIL = 'tosin@skillsquared.com'  
 
-# EMAIL
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+# # EMAIL
+# EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 # crispy config
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"

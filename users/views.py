@@ -8,6 +8,10 @@ from .forms import AffiliateRegistrationForm, AdminRegistrationForm, UserProfile
 from affiliates.models import Affiliate 
 from django.contrib.auth import logout
 from django.contrib import messages
+
+from django.contrib.auth.views import PasswordResetView
+from django.urls import reverse_lazy
+
 # Create your views here.
 
 def home(request):
@@ -31,24 +35,50 @@ def register_user(request):
     if request.method == 'POST':
         user_form = AffiliateRegistrationForm(request.POST)
         if user_form.is_valid():
-            # Create user
+            # Create the user but don't commit yet
             user = user_form.save(commit=False)
+            # Set any additional fields before final save
             user.user_type = 'affiliate'
-            user.full_name = f"{user_form.cleaned_data['first_name']} {user_form.cleaned_data['last_name']}"
-            user.save()
-            # Create affiliate profile and link referrer
+            user.full_name = (
+                f"{user_form.cleaned_data['first_name']} "
+                f"{user_form.cleaned_data['last_name']}"
+            )
+            user.save()  # Now the user is actually in the DB
+
+            # Make sure referrer is a saved Affiliate instance
+            if referrer and not referrer.pk:
+                referrer.save()
+
+            # Create the Affiliate record for this new user
             affiliate = Affiliate.objects.create(user=user, referred_by=referrer)
 
-            # Update referrer's referrals
+            # Create or update the UserProfile with phone and address
+            UserProfile.objects.update_or_create(
+                user=user,
+                defaults={
+                    'phone_number': user_form.cleaned_data['phone_number'],
+                    'address': user_form.cleaned_data['address'],
+                }
+            )
+
+            # If we have a valid referrer, increment their referral count
             if referrer:
                 referrer.increase_referrals()
 
-            login(request, user)  # Log in the user
+            # Log the user in
+            login(request, user)
             return redirect('affiliate_dashboard')
     else:
         user_form = AffiliateRegistrationForm()
 
-    return render(request, 'users/register.html', {'user_form': user_form, 'referrer': referrer})
+    return render(
+        request, 
+        'users/register.html', 
+        {
+            'user_form': user_form,
+            'referrer': referrer
+        }
+    )
 
 def register_admin(request):
     if request.method == 'POST':
@@ -138,3 +168,8 @@ def update_profile(request):
         'form_title': 'Update Your Profile',
         'submit_button_text': 'Update Profile',
     })
+    
+class CustomPasswordResetView(PasswordResetView):
+    template_name = 'users/password_reset.html'
+    email_template_name = 'users/password_reset_email.html'
+    success_url = reverse_lazy('password_reset_done')

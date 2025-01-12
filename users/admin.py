@@ -2,12 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser, UserProfile
 
-
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
-    """
-    Admin configuration for the CustomUser model.
-    """
     model = CustomUser
     list_display = ('username', 'email', 'full_name', 'user_type', 'is_active', 'is_staff', 'is_superuser')
     list_filter = ('user_type', 'is_active', 'is_staff', 'is_superuser')
@@ -19,13 +15,6 @@ class CustomUserAdmin(UserAdmin):
         ('Permissions', {'fields': ('user_type', 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         ('Important Dates', {'fields': ('last_login', 'date_joined')}),
     )
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2', 'user_type', 'is_active', 'is_staff', 'is_superuser')}
-        ),
-    )
-    ordering = ('username',)
 
 
 @admin.register(UserProfile)

@@ -55,25 +55,21 @@ class UserProfileForm(forms.ModelForm):
             Submit('submit', 'Save Profile', css_class='btn btn-primary btn-block mt-3')
         )
 
-
 class AffiliateRegistrationForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True)
     last_name = forms.CharField(max_length=30, required=True)
-    referred_by = forms.ModelChoiceField(
-        queryset=Affiliate.objects.all(), required=False, widget=forms.HiddenInput()
-    )
+    phone_number = forms.CharField(max_length=15, required=True)
+    address = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), required=True)
 
     class Meta:
         model = CustomUser
-        fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2', 'referred_by']
+        fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2']
 
-    def __init__(self, *args, **kwargs):
-        referrer = kwargs.pop('referrer', None)
-        super().__init__(*args, **kwargs)
-        if referrer:
-            self.fields['referred_by'].initial = referrer
-            self.fields['referred_by'].widget.attrs['readonly'] = True  # Make field non-editable
-
+    def save(self, commit=True):
+        # Just create/save the User object
+        user = super().save(commit=commit)
+        return user
+        
 class AdminRegistrationForm(UserCreationForm):
     class Meta:
         model = CustomUser

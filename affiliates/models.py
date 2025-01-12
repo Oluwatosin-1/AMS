@@ -25,6 +25,7 @@ class Affiliate(BaseModel):
     referred_by = models.ForeignKey(
         'self', null=True, blank=True, on_delete=models.SET_NULL, related_name='referrals_downline'
     )
+    
 
     objects = AffiliateManager()  # Attach custom manager
 

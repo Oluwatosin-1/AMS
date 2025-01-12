@@ -1,73 +1,44 @@
 {% load static %}
+ 
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta
-    content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no"
-    name="viewport"
-  />
-  <title>Skillsquared Affiliate Marketing Services</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Skillsquared Affiliate Management System: A professional platform for managing affiliates, tracking performance, and optimizing digital marketing efforts.">
+  <meta name="keywords" content="Skillsquared, Affiliate Marketing, Management System, MLM, Unilevel, Matrix, Membership, Digital Marketing">
+  <meta name="author" content="Skillsquared INC">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <meta
-    name="description"
-    content="cheap and affordable unilevel, matrix, and membership script"
-  />
-  <meta
-    name="keywords"
-    content="MLM script, unilevel plan, matrix program, membership script"
-  />
-  <meta name="author" content="MLMScript.net" />
+  <title>Skillsquared Affiliate Management System</title>
 
-  <link
-    rel="shortcut icon"
-    type="image/png"
-    href="{% static 'assets/image/favicon.png' %}"
-  />
-  <link
-    rel="icon"
-    type="image/png"
-    sizes="32x32"
-    href="{% static 'assets/image/favicon.png' %}"
-  />
-  <link
-    rel="icon"
-    type="image/png"
-    sizes="16x16"
-    href="{% static 'assets/image/favicon.png' %}"
-  />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-  
-  <!-- General CSS Files -->
-  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/all.min.css' %}" />
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-  />
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="{% static 'assets/image/favicon.png' %}" type="image/png">
+  <link rel="icon" href="{% static 'assets/image/favicon.png' %}" type="image/png" sizes="16x16">
+  <link rel="icon" href="{% static 'assets/image/favicon.png' %}" type="image/png" sizes="32x32">
 
-  <!-- Bootstrap JS and dependencies -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
 
   <!-- CSS Libraries -->
-  <link rel="stylesheet" href="{% static 'css/pace-theme-minimal.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/toastr.min.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/select2.min.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/chartjs.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/select2.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/pace-theme-minimal.css' %}">
+  <link rel="stylesheet" href="{% static 'css/toastr.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/chartjs.css' %}">
 
   <!-- Template CSS -->
-  <link rel="stylesheet" href="{% static 'css/fontmuli.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/components.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/notifytoast.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/demo_colorchanger.css' %}" />
-  
-  <!-- General JS Scripts -->
-  <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components.css' %}">
+  <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+  <link rel="stylesheet" href="{% static 'css/fontmuli.css' %}">
+  <link rel="stylesheet" href="{% static 'css/notifytoast.css' %}">
+
+  <!-- Summernote CSS -->
+  <link rel="stylesheet" href="{% static 'css/summernote-bs4.css' %}">
+
+  <!-- JavaScript Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="{% static 'js/popper.min.js' %}"></script>
   <script src="{% static 'js/bootstrap.min.js' %}"></script>
   <script src="{% static 'js/jquery.nicescroll.min.js' %}"></script>
@@ -76,11 +47,9 @@
   <script src="{% static 'js/toastr.min.js' %}"></script>
   <script src="{% static 'js/select2.full.min.js' %}"></script>
   <script src="{% static 'js/bootbox.min.js' %}"></script>
-
-  <!-- JS Libraries -->
   <script src="{% static 'js/stisla.js' %}"></script>
 
-  <!-- include summernote css/js -->
-  <link href="{% static 'css/summernote-bs4.css' %}" rel="stylesheet" />
+  <!-- Summernote JS -->
   <script src="{% static 'js/summernote-bs4.min.js' %}"></script>
+
 </head>

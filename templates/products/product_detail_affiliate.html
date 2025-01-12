@@ -19,6 +19,9 @@
             <h4>{{ object.name }}</h4>
             <p>{{ object.description }}</p>
             <p><strong>Price:</strong> ${{ object.price }}</p>
+            {% if affiliate_commission %}
+              <p><strong>Your Commission:</strong> ${{ affiliate_commission|floatformat:2 }}</p>
+            {% endif %}
             <p><strong>Category:</strong> {{ object.get_category_display }}</p>
             {% if object.sales_note %}
               <p><strong>Sales Note:</strong> {{ object.sales_note }}</p>

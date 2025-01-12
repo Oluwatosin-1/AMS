@@ -17,8 +17,14 @@
                         {% if referrer %}
                         <div class="row">
                             <div class="form-group col-12">
-                                <label for="referrer" class="form-label">Referred By</label>
-                                <input type="text" class="form-control" id="referrer" value="{{ referrer.user.full_name|default:referrer.user.username }}" readonly>
+                                <!-- We remove the redundant label here to avoid duplication -->
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="referrer" 
+                                    value="{{ referrer.user.full_name|default:referrer.user.username }}" 
+                                    readonly
+                                >
                             </div>
                         </div>
                         {% endif %}
@@ -31,66 +37,105 @@
                                 </div>
 
                                 <div class="card-body">
+                                    <!-- Crispy Forms for user fields (labels are auto-generated) -->
                                     <div class="row">
-                                        <!-- First Name -->
                                         <div class="form-group col-md-6">
-                                            <label for="first_name">First Name</label>
                                             {{ user_form.first_name|as_crispy_field }}
                                         </div>
-                                        <!-- Last Name -->
                                         <div class="form-group col-md-6">
-                                            <label for="last_name">Last Name</label>
                                             {{ user_form.last_name|as_crispy_field }}
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <!-- Username -->
                                         <div class="form-group col-md-6">
-                                            <label for="username">Username</label>
                                             {{ user_form.username|as_crispy_field }}
                                         </div>
-                                        <!-- Email -->
                                         <div class="form-group col-md-6">
-                                            <label for="email">Email</label>
                                             {{ user_form.email|as_crispy_field }}
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <!-- Password -->
                                         <div class="form-group col-md-6">
-                                            <label for="password1">Password</label>
-                                            {{ user_form.password1|as_crispy_field }}
+                                            {{ user_form.phone_number|as_crispy_field }}
                                         </div>
-                                        <!-- Confirm Password -->
                                         <div class="form-group col-md-6">
+                                            {{ user_form.address|as_crispy_field }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Manual password fields (keep label + toggle eye icon) -->
+                                    <div class="row">
+                                        <div class="form-group col-md-6 position-relative">
+                                            <label for="password1">Password</label>
+                                            <div class="input-group">
+                                                <input 
+                                                    id="password1" 
+                                                    type="password" 
+                                                    class="form-control" 
+                                                    name="password1" 
+                                                    required
+                                                >
+                                                <div class="input-group-append">
+                                                    <button type="button" class="btn btn-outline-secondary toggle-password" tabindex="-1">
+                                                        <i class="fa fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6 position-relative">
                                             <label for="password2">Confirm Password</label>
-                                            {{ user_form.password2|as_crispy_field }}
+                                            <div class="input-group">
+                                                <input 
+                                                    id="password2" 
+                                                    type="password" 
+                                                    class="form-control" 
+                                                    name="password2" 
+                                                    required
+                                                >
+                                                <div class="input-group-append">
+                                                    <button type="button" class="btn btn-outline-secondary toggle-password" tabindex="-1">
+                                                        <i class="fa fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
                                     <!-- Terms and Conditions -->
                                     <div class="form-group">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="terms" required>
+                                            <input 
+                                                type="checkbox" 
+                                                class="custom-control-input" 
+                                                id="terms" 
+                                                required
+                                            >
                                             <label class="custom-control-label" for="terms">
-                                                I agree to the <a href="#" data-toggle="modal" data-target="#termsModal">terms and conditions</a>.
+                                                I agree to the 
+                                                <a href="#" data-toggle="modal" data-target="#termsModal">
+                                                    terms and conditions
+                                                </a>.
                                             </label>
-                                            <div class="invalid-feedback">You must agree to the terms and conditions before submitting.</div>
+                                            <div class="invalid-feedback">
+                                                You must agree to the terms and conditions before submitting.
+                                            </div>
                                         </div>
                                     </div>
 
                                     <!-- Submit Button -->
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-primary btn-lg btn-block">Register</button>
+                                        <button type="submit" class="btn btn-primary btn-lg btn-block">
+                                            Register
+                                        </button>
                                     </div>
                                 </div>
                             </form>
                             <div class="mt-3 text-center"> 
-                                <p>Already have an account? <a href="{% url 'login' %}">Login now</a></p>
+                                <p>
+                                    Already have an account? 
+                                    <a href="{% url 'login' %}">Login now</a>
+                                </p>
                             </div>
-                        </div>
-
-                        <div class="mt-4 text-muted text-center">
                         </div>
                     </div>
                 </div>
@@ -120,7 +165,9 @@
                         </ul>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            Close
+                        </button>
                     </div>
                 </div>
             </div>
@@ -131,5 +178,27 @@
     <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/scripts.js' %}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const togglePasswordButtons = document.querySelectorAll(".toggle-password");
+
+            togglePasswordButtons.forEach((button) => {
+                button.addEventListener("click", function () {
+                    const input = this.parentElement.previousElementSibling;
+                    const icon = this.querySelector("i");
+
+                    if (input.type === "password") {
+                        input.type = "text";
+                        icon.classList.remove("fa-eye");
+                        icon.classList.add("fa-eye-slash");
+                    } else {
+                        input.type = "password";
+                        icon.classList.remove("fa-eye-slash");
+                        icon.classList.add("fa-eye");
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
