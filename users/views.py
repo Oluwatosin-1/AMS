@@ -80,7 +80,7 @@ def register_user(request):
     else:
         user_form = AffiliateRegistrationForm()
 
-    return render(request, 'users/register.html', {'user_form': user_form, 'referrer': referrer})
+    return render(request, 'users/register.html', {'user_form': user_form, 'referrer': referrer,'form_errors': user_form.errors,})
 
 
 def register_admin(request):

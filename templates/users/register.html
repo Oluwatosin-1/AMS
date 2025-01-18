@@ -12,6 +12,12 @@
                             <img src="{% static 'assets/image/logo.png' %}" alt="logo" width="100" class="shadow-light rounded-circle">
                             <div>Skillsquared Membership</div>
                         </div>
+                        {% if user_form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ user_form.non_field_errors|join:", " }}
+                        </div>
+                        {% endif %}
+
 
                         <!-- Referred By Section -->
                         {% if referrer %}
@@ -74,7 +80,6 @@
                                         </div>
                                     </div>
                                     
-                                    <!-- Manual password fields (keep label + toggle eye icon) -->
                                     <div class="row">
                                         <div class="form-group col-md-6 position-relative">
                                             <label for="password1">Password</label>
@@ -82,7 +87,7 @@
                                                 <input 
                                                     id="password1" 
                                                     type="password" 
-                                                    class="form-control" 
+                                                    class="form-control {% if user_form.password1.errors %}is-invalid{% endif %}" 
                                                     name="password1" 
                                                     required
                                                 >
@@ -91,6 +96,11 @@
                                                         <i class="fa fa-eye"></i>
                                                     </button>
                                                 </div>
+                                                {% if user_form.password1.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ user_form.password1.errors|join:", " }}
+                                                </div>
+                                                {% endif %}
                                             </div>
                                         </div>
                                         <div class="form-group col-md-6 position-relative">
@@ -99,7 +109,7 @@
                                                 <input 
                                                     id="password2" 
                                                     type="password" 
-                                                    class="form-control" 
+                                                    class="form-control {% if user_form.password2.errors %}is-invalid{% endif %}" 
                                                     name="password2" 
                                                     required
                                                 >
@@ -108,10 +118,15 @@
                                                         <i class="fa fa-eye"></i>
                                                     </button>
                                                 </div>
+                                                {% if user_form.password2.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ user_form.password2.errors|join:", " }}
+                                                </div>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
-
+                                    
                                     <!-- Terms and Conditions -->
                                     <div class="form-group">
                                         <div class="custom-control custom-checkbox">
@@ -184,6 +199,15 @@
             </div>
         </div>
     </div>
+    <style>
+        .is-invalid {
+            border-color: #dc3545;
+        }
+        .invalid-feedback {
+            color: #dc3545;
+            font-size: 0.875rem;
+        }        
+    </style>
 
     <!-- JavaScript -->
     <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
