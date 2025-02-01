@@ -24,7 +24,6 @@ def register_user(request):
     """Register a new user and handle referrals."""
     referrer = None
 
-    # Capture referral ID from query parameters
     ref = request.GET.get('ref')
     if ref:
         referrer = Affiliate.objects.filter(id=ref).first()
@@ -38,49 +37,43 @@ def register_user(request):
         user_form = AffiliateRegistrationForm(request.POST)
         if user_form.is_valid():
             with transaction.atomic():
-                # Create the user
                 user = user_form.save(commit=False)
                 user.user_type = 'affiliate'
                 user.full_name = f"{user_form.cleaned_data['first_name']} {user_form.cleaned_data['last_name']}"
                 user.save()
-
-                # Debugging: Check user creation
                 print(f"User Created: {user.username}, {user.full_name}, {user.email}")
 
-                # Create the affiliate entry
                 affiliate = Affiliate.objects.create(user=user, referred_by=referrer)
-
-                # Debugging: Check affiliate creation
                 print(f"Affiliate Created: {affiliate.user.username}, Referred By: {referrer}")
 
                 # Populate the user profile
-                profile = user.profile  # Signal creates a blank profile automatically
+                profile = user.profile  
                 profile.phone_number = user_form.cleaned_data['phone_number']
                 profile.address = user_form.cleaned_data['address']
                 profile.city = user_form.cleaned_data['city']
                 profile.state = user_form.cleaned_data['state']
                 profile.country = user_form.cleaned_data['country']
                 profile.save()
-
-                # Debugging: Check profile population
                 print(f"UserProfile Updated: {profile.phone_number}, {profile.address}")
 
-                # Update referral count if applicable
                 if referrer:
+                    # Increase referrer’s referral count
                     referrer.increase_referrals()
-                    print(f"Referrer Updated: {referrer.user.username}, Total Referrals: {referrer.total_referrals}")
+                    # **Changed total_referrals -> referrals**
+                    print(f"Referrer Updated: {referrer.user.username}, Total Referrals: {referrer.referrals}")
 
-                # Log the user in and redirect
                 login(request, user)
                 return redirect('affiliate_dashboard')
         else:
-            # Debugging: Check form errors
             print(f"Form Errors: {user_form.errors}")
-
     else:
         user_form = AffiliateRegistrationForm()
 
-    return render(request, 'users/register.html', {'user_form': user_form, 'referrer': referrer,'form_errors': user_form.errors,})
+    return render(
+        request, 
+        'users/register.html', 
+        {'user_form': user_form, 'referrer': referrer, 'form_errors': user_form.errors}
+    )
 
 
 def register_admin(request):
