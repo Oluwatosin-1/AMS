@@ -1,4 +1,5 @@
-from referrals.models import Referral 
+from referrals.models import Referral
+
 
 def track_referral_commission(product_purchase):
     # Ensure the affiliate and referrer relationships are tracked
@@ -12,5 +13,5 @@ def track_referral_commission(product_purchase):
         Referral.objects.create(
             affiliate=referrer,
             product=product_purchase.product,
-            commission_earned=commission
+            commission_earned=commission,
         )

@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class AffiliateManager(models.Manager):
     def active_affiliates(self):
         """Fetch all active affiliates."""
@@ -7,4 +8,4 @@ class AffiliateManager(models.Manager):
 
     def top_referrers(self):
         """Fetch affiliates with the most referrals."""
-        return self.order_by('-referrals')[:10]
+        return self.order_by("-referrals")[:10]

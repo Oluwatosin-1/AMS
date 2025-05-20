@@ -3,16 +3,18 @@ from affiliates.models import Affiliate
 
 # Centralized Status Choices
 STATUS_CHOICES = [
-    ('pending', 'Pending'),
-    ('approved', 'Approved'),
-    ('rejected', 'Rejected'),
-    ('processed', 'Processed'),
-    ('failed', 'Failed'),
+    ("pending", "Pending"),
+    ("approved", "Approved"),
+    ("rejected", "Rejected"),
+    ("processed", "Processed"),
+    ("failed", "Failed"),
 ]
+
 
 # Abstract Base Model
 class BasePayout(models.Model):
     """Abstract base class for payout and payment-related models."""
+
     affiliate = models.ForeignKey(
         Affiliate,
         on_delete=models.CASCADE,
@@ -22,7 +24,7 @@ class BasePayout(models.Model):
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
-        default='pending',
+        default="pending",
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -36,11 +38,13 @@ class BasePayout(models.Model):
 # Derived Models
 class PayoutRequest(BasePayout):
     """Model for affiliate payout requests."""
+
     pass
 
 
 class Payout(BasePayout):
     """Model for processed payouts."""
+
     affiliate = models.ForeignKey(
         Affiliate,
         on_delete=models.CASCADE,
@@ -55,6 +59,7 @@ class Payout(BasePayout):
 
 class Payment(BasePayout):
     """Model for tracking general affiliate payments."""
+
     payment_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):

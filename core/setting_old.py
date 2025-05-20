@@ -9,11 +9,13 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+
 from pathlib import Path
 import os
 from decouple import config  # Use python-decouple for reading environment variables
 
 import os
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,14 +24,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "q9823gvrwryva)g_hn#5fh@ak927493525bisbfibiergeri5l7p1b#@y^5ve8^@2wo63te7h2(5r$_i3"
+SECRET_KEY = (
+    "q9823gvrwryva)g_hn#5fh@ak927493525bisbfibiergeri5l7p1b#@y^5ve8^@2wo63te7h2(5r$_i3"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*', 'affiliate.ddevhub.com']
+ALLOWED_HOSTS = ["*", "affiliate.ddevhub.com"]
 
-SITE_DOMAIN = 'https://affiliate.ddevhub.com'
+SITE_DOMAIN = "https://affiliate.ddevhub.com"
 # Application definition
 
 INSTALLED_APPS = [
@@ -39,31 +43,29 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    
-    #Custom Apps
-    'affiliates',  # Ensure this line exists
-    'products',
-    'training',
-    'payments',
-    'referrals',
-    'users',
-    'ranking',
-    
+    # Custom Apps
+    "affiliates",  # Ensure this line exists
+    "products",
+    "training",
+    "payments",
+    "referrals",
+    "users",
+    "ranking",
     # Third party apps
-    'bootstrap4',
+    "bootstrap4",
     "crispy_forms",
     "crispy_bootstrap5",
     "django_filters",
 ]
- 
+
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',  # Auth middleware
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware'
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",  # Auth middleware
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -71,7 +73,7 @@ ROOT_URLCONF = "core.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -97,13 +99,13 @@ WSGI_APPLICATION = "core.wsgi.application"
 #     }
 # }
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ddevhub_AMS',
-        'USER': 'ddevhub_support',
-        'PASSWORD': 'Olebint@2024',
-        'HOST': 'localhost',
-        'PORT': '3306'
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "ddevhub_AMS",
+        "USER": "ddevhub_support",
+        "PASSWORD": "Olebint@2024",
+        "HOST": "localhost",
+        "PORT": "3306",
     },
 }
 # Password validation
@@ -136,38 +138,40 @@ USE_I18N = True
 
 USE_TZ = True
 
-AUTH_USER_MODEL = 'users.CustomUser'   
-LOGOUT_REDIRECT_URL = '/users/login/'  # Ensure this matches the path for the login page
+AUTH_USER_MODEL = "users.CustomUser"
+LOGOUT_REDIRECT_URL = "/users/login/"  # Ensure this matches the path for the login page
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
 # STATIC_ROOT = '/home/ddevhub/public_html/static'
-STATIC_ROOT = '/home/ddevhub/affiliate.ddevhub.com/static'
+STATIC_ROOT = "/home/ddevhub/affiliate.ddevhub.com/static"
 
 # STATICFILES_DIRS = [BASE_DIR / 'static']
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = '/home/ddevhub/affiliate.ddevhub.com/media'
+MEDIA_URL = "/media/"
+MEDIA_ROOT = "/home/ddevhub/affiliate.ddevhub.com/media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.titan.email'  # Your SMTP provider (Titan email in this case)
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.titan.email"  # Your SMTP provider (Titan email in this case)
 EMAIL_PORT = 587  # Use 587 for TLS or 465 for SSL
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Use environment variables for sensitive data
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = 'ceo@skillsquared.com'  # The sender email address used in emails
-SERVER_EMAIL = 'ceo@skillsquared.com'  # Email address for error notifications
+EMAIL_HOST_USER = config(
+    "EMAIL_HOST_USER"
+)  # Use environment variables for sensitive data
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = "ceo@skillsquared.com"  # The sender email address used in emails
+SERVER_EMAIL = "ceo@skillsquared.com"  # Email address for error notifications
 
-ADMIN_EMAIL = 'ceo@skillsquared.com'  
+ADMIN_EMAIL = "ceo@skillsquared.com"
 
-#HTTPS
+# HTTPS
 SECURE_SSL_REDIRECT = True  # Redirect HTTP to HTTPS
 SECURE_HSTS_SECONDS = 31536000  # Enforce HTTPS for one year
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Apply to subdomains
@@ -179,13 +183,13 @@ CSRF_COOKIE_SECURE = True  # Secure CSRF cookies
 
 
 # EMAIL
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 
 # crispy config
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
- 
+
 # PAYSTACK
-PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY')
-PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY')
+PAYSTACK_SECRET_KEY = config("PAYSTACK_SECRET_KEY")
+PAYSTACK_PUBLIC_KEY = config("PAYSTACK_PUBLIC_KEY")

@@ -4,16 +4,18 @@ from decimal import Decimal
 
 
 class Referral(models.Model):
-    affiliate = models.ForeignKey('affiliates.Affiliate', on_delete=models.CASCADE)
+    affiliate = models.ForeignKey("affiliates.Affiliate", on_delete=models.CASCADE)
     referred_user = models.OneToOneField(
         settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL
     )
     product = models.ForeignKey(
-        'products.Product', on_delete=models.CASCADE, null=True, blank=True
+        "products.Product", on_delete=models.CASCADE, null=True, blank=True
     )
     client_email = models.EmailField()
     referred_at = models.DateTimeField(auto_now_add=True)
-    commission_earned = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    commission_earned = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.0
+    )
 
     def save(self, *args, **kwargs):
         """

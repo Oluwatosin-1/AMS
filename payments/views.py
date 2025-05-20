@@ -16,7 +16,7 @@ from django.http import HttpResponseForbidden
 from django.db.models import Sum
 from paystackapi.transaction import Transaction
 from django.conf import settings
-from django.http import JsonResponse 
+from django.http import JsonResponse
 from django.urls import reverse
 import logging
 from reportlab.lib.pagesizes import letter
@@ -28,22 +28,25 @@ import io
 
 logger = logging.getLogger(__name__)
 
+
 @staff_member_required
 def process_payment(request, payment_id):
     payment = get_object_or_404(Payment, id=payment_id)
-    payment.status = 'Paid'
+    payment.status = "Paid"
     payment.payment_date = timezone.now()
     payment.save()
-    return redirect('admin_dashboard')
+    return redirect("admin_dashboard")
+
 
 @login_required
 def payment_history(request):
     """Display the payment history for the affiliate."""
-    if request.user.user_type != 'affiliate':
+    if request.user.user_type != "affiliate":
         return HttpResponseForbidden("You are not authorized to access this page.")
 
     payments = Payment.objects.filter(affiliate=request.user.affiliate)
-    return render(request, 'payments/history.html', {'payments': payments})
+    return render(request, "payments/history.html", {"payments": payments})
+
 
 @login_required
 def wallet_details(request):
@@ -51,61 +54,79 @@ def wallet_details(request):
     affiliate = request.user.affiliate
 
     total_earnings = affiliate.calculate_total_earnings()
-    total_withdrawn = affiliate.payout_set.aggregate(total=Sum('amount'))['total'] or 0
+    total_withdrawn = affiliate.payout_set.aggregate(total=Sum("amount"))["total"] or 0
     wallet_balance = total_earnings - total_withdrawn
 
-    return render(request, 'affiliates/wallet_details.html', {
-        'total_earnings': total_earnings,
-        'total_withdrawn': total_withdrawn,
-        'wallet_balance': wallet_balance,
-    })
+    return render(
+        request,
+        "affiliates/wallet_details.html",
+        {
+            "total_earnings": total_earnings,
+            "total_withdrawn": total_withdrawn,
+            "wallet_balance": wallet_balance,
+        },
+    )
+
 
 @login_required
 def withdraw_request(request):
     """Handle affiliate withdrawal requests."""
-    if request.user.user_type != 'affiliate':
+    if request.user.user_type != "affiliate":
         return HttpResponseForbidden("You are not authorized to access this page.")
 
     affiliate = request.user.affiliate
-    total_withdrawn = affiliate.payouts.aggregate(total=Sum('amount'))['total'] or 0
+    total_withdrawn = affiliate.payouts.aggregate(total=Sum("amount"))["total"] or 0
     total_earnings = affiliate.calculate_total_earnings()
     wallet_balance = total_earnings - total_withdrawn
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = PayoutRequestForm(request.POST)
         if form.is_valid():
-            amount_requested = form.cleaned_data.get('amount')
+            amount_requested = form.cleaned_data.get("amount")
 
             # Check if the amount meets the threshold and wallet balance
             if amount_requested < affiliate.payout_threshold:
-                form.add_error('amount', 'Amount must be greater than the minimum threshold.')
+                form.add_error(
+                    "amount", "Amount must be greater than the minimum threshold."
+                )
             elif amount_requested > wallet_balance:
-                form.add_error('amount', 'Insufficient wallet balance for this withdrawal.')
+                form.add_error(
+                    "amount", "Insufficient wallet balance for this withdrawal."
+                )
             else:
                 payout_request = form.save(commit=False)
                 payout_request.affiliate = affiliate
                 payout_request.save()
-                return redirect('affiliate_dashboard')  # Redirect to dashboard after submission
+                return redirect(
+                    "affiliate_dashboard"
+                )  # Redirect to dashboard after submission
     else:
         form = PayoutRequestForm()
 
-    return render(request, 'payments/withdraw_request.html', {
-        'form': form,
-        'affiliate': affiliate,
-        'wallet_balance': wallet_balance,
-        'total_earnings': total_earnings,
-        'total_withdrawn': total_withdrawn,
-    })
-    
-    
+    return render(
+        request,
+        "payments/withdraw_request.html",
+        {
+            "form": form,
+            "affiliate": affiliate,
+            "wallet_balance": wallet_balance,
+            "total_earnings": total_earnings,
+            "total_withdrawn": total_withdrawn,
+        },
+    )
+
+
 @login_required
 def sales_history(request):
     """Display the sales history for the affiliate."""
-    if request.user.user_type != 'affiliate':
+    if request.user.user_type != "affiliate":
         return HttpResponseForbidden("You are not authorized to access this page.")
 
-    purchases = ProductPurchase.objects.filter(affiliate=request.user.affiliate, is_paid=True)
-    return render(request, 'payments/history.html', {'purchases': purchases})
+    purchases = ProductPurchase.objects.filter(
+        affiliate=request.user.affiliate, is_paid=True
+    )
+    return render(request, "payments/history.html", {"purchases": purchases})
+
 
 def initialize_payment(request, product_id):
     """
@@ -114,14 +135,15 @@ def initialize_payment(request, product_id):
     """
     logger.info(f"Initializing payment for product ID: {product_id}")
     product = get_object_or_404(Product, id=product_id)
-    client_email = request.POST.get('email')
+    client_email = request.POST.get("email")
 
     # Validate the client email
-    client_email = request.POST.get('email')  # For traditional POST
-    if request.content_type == 'application/json':
+    client_email = request.POST.get("email")  # For traditional POST
+    if request.content_type == "application/json":
         import json
+
         body = json.loads(request.body)
-        client_email = body.get('email', client_email)
+        client_email = body.get("email", client_email)
 
     logger.info(f"Received email: {client_email}")  # Log the email
 
@@ -137,7 +159,7 @@ def initialize_payment(request, product_id):
     headers = {
         "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}",
         "Content-Type": "application/json",
-        'X-CSRFToken': '{{ csrf_token }}',  # Ensure this is included
+        "X-CSRFToken": "{{ csrf_token }}",  # Ensure this is included
     }
     data = {
         "email": client_email,
@@ -146,7 +168,9 @@ def initialize_payment(request, product_id):
         "callback_url": request.build_absolute_uri(reverse("payment_callback")),
         "metadata": {
             "product_id": product.id,
-            "affiliate_id": request.session.get("ref"),  # Retrieve affiliate ID from session
+            "affiliate_id": request.session.get(
+                "ref"
+            ),  # Retrieve affiliate ID from session
         },
     }
 
@@ -165,13 +189,18 @@ def initialize_payment(request, product_id):
                 amount=product.price,
                 paystack_reference=reference,  # Store Paystack reference
             )
-            return JsonResponse({"payment_url": response.json()["data"]["authorization_url"]})
+            return JsonResponse(
+                {"payment_url": response.json()["data"]["authorization_url"]}
+            )
         except Exception as e:
             logger.error(f"Error saving purchase record: {e}")
-            return JsonResponse({"error": "Failed to save purchase record."}, status=500)
+            return JsonResponse(
+                {"error": "Failed to save purchase record."}, status=500
+            )
     else:
         logger.error(f"Paystack initialization failed: {response.json()}")
         return JsonResponse({"error": "Payment initialization failed."}, status=500)
+
 
 def payment_callback(request):
     """
@@ -194,10 +223,12 @@ def payment_callback(request):
         if data.get("status") == "success":
             try:
                 # Retrieve and update the purchase record
-                purchase = get_object_or_404(ProductPurchase, paystack_reference=reference)
+                purchase = get_object_or_404(
+                    ProductPurchase, paystack_reference=reference
+                )
                 purchase.is_paid = True
                 purchase.save()
-                
+
                 # Store the purchase ID in the session for use in the success view
                 request.session["purchase_id"] = purchase.id
 
@@ -231,6 +262,7 @@ def payment_callback(request):
         logger.error("Failed to verify payment with Paystack.")
         return JsonResponse({"error": "Payment verification failed."}, status=500)
 
+
 @login_required
 def verify_payment(request, purchase_id):
     """Verify Paystack payment."""
@@ -239,14 +271,14 @@ def verify_payment(request, purchase_id):
     # Verify the transaction with Paystack
     response = Transaction.verify(reference=purchase.paystack_reference)
 
-    if response['status'] and response['data']['status'] == 'success':
+    if response["status"] and response["data"]["status"] == "success":
         # Mark purchase as paid
         purchase.is_paid = True
         purchase.save()
 
-        return redirect('purchase_success')
+        return redirect("purchase_success")
     else:
-        return JsonResponse({'error': 'Payment verification failed'}, status=400)
+        return JsonResponse({"error": "Payment verification failed"}, status=400)
 
 
 def invoice_download(request, purchase_id):
@@ -265,7 +297,10 @@ def invoice_download(request, purchase_id):
                 raise Http404("Unauthorized access to this invoice.")
         else:
             # If the user is not logged in, ensure they are accessing their own purchase via session
-            if "purchase_id" not in request.session or request.session["purchase_id"] != purchase_id:
+            if (
+                "purchase_id" not in request.session
+                or request.session["purchase_id"] != purchase_id
+            ):
                 raise Http404("Unauthorized access to this invoice.")
 
         # Create a buffer to hold the PDF
@@ -292,27 +327,33 @@ def invoice_download(request, purchase_id):
         # Create a table for details
         details_table = Table(details, hAlign="LEFT")
         details_table.setStyle(
-            TableStyle([
-                ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
-                ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
-                ("ALIGN", (0, 0), (-1, -1), "LEFT"),
-                ("FONTNAME", (0, 0), (-1, -1), "Helvetica"),
-                ("FONTSIZE", (0, 0), (-1, -1), 10),
-                ("BOTTOMPADDING", (0, 0), (-1, 0), 12),
-                ("BACKGROUND", (0, 1), (-1, -1), colors.white),
-                ("GRID", (0, 0), (-1, -1), 1, colors.black),
-            ])
+            TableStyle(
+                [
+                    ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
+                    ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
+                    ("ALIGN", (0, 0), (-1, -1), "LEFT"),
+                    ("FONTNAME", (0, 0), (-1, -1), "Helvetica"),
+                    ("FONTSIZE", (0, 0), (-1, -1), 10),
+                    ("BOTTOMPADDING", (0, 0), (-1, 0), 12),
+                    ("BACKGROUND", (0, 1), (-1, -1), colors.white),
+                    ("GRID", (0, 0), (-1, -1), 1, colors.black),
+                ]
+            )
         )
 
         # Footer
-        footer = Paragraph("© 2024 Skillsquared Affiliate Management System", normal_style)
+        footer = Paragraph(
+            "© 2024 Skillsquared Affiliate Management System", normal_style
+        )
 
         # Add elements to PDF
         pdf.build([title, details_table, footer])
 
         # Generate the PDF
         buffer.seek(0)
-        return FileResponse(buffer, as_attachment=True, filename=f"invoice_{purchase.id}.pdf")
+        return FileResponse(
+            buffer, as_attachment=True, filename=f"invoice_{purchase.id}.pdf"
+        )
     except ProductPurchase.DoesNotExist:
         raise Http404("Purchase not found.")
     except Exception as e:
